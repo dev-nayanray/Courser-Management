@@ -4,6 +4,7 @@ import model.Teacher;
 import model.Course;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -33,32 +34,56 @@ public class TeacherRegistrationPanel extends JPanel {
     public TeacherRegistrationPanel() {
         setLayout(new BorderLayout());
 
-        // Top panel for teacher registration form
+        // Fonts and colors
+        Font labelFont = new Font("Arial", Font.PLAIN, 14);
+        Font fieldFont = new Font("Arial", Font.PLAIN, 14);
+        Font buttonFont = new Font("Arial", Font.BOLD, 14);
+        Color buttonBgColor = new Color(70, 130, 180);
+        Color buttonHoverColor = new Color(100, 149, 237);
+        Color buttonFgColor = Color.WHITE;
+
+        // Top panel for teacher registration form with titled border
         JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Teacher Registration", TitledBorder.LEFT, TitledBorder.TOP, labelFont));
         GridBagConstraints gbc = new GridBagConstraints();
 
         JLabel idLabel = new JLabel("Teacher ID:");
+        idLabel.setFont(labelFont);
         idField = new JTextField(15);
+        idField.setFont(fieldFont);
 
         JLabel firstNameLabel = new JLabel("First Name:");
+        firstNameLabel.setFont(labelFont);
         firstNameField = new JTextField(15);
+        firstNameField.setFont(fieldFont);
 
         JLabel lastNameLabel = new JLabel("Last Name:");
+        lastNameLabel.setFont(labelFont);
         lastNameField = new JTextField(15);
+        lastNameField.setFont(fieldFont);
 
         JLabel emailLabel = new JLabel("Email:");
+        emailLabel.setFont(labelFont);
         emailField = new JTextField(15);
+        emailField.setFont(fieldFont);
 
         JLabel departmentLabel = new JLabel("Department:");
+        departmentLabel.setFont(labelFont);
         departmentField = new JTextField(15);
+        departmentField.setFont(fieldFont);
 
         JLabel titleLabel = new JLabel("Title:");
+        titleLabel.setFont(labelFont);
         titleField = new JTextField(15);
+        titleField.setFont(fieldFont);
 
         submitButton = new JButton("Submit");
-        resetButton = new JButton("Reset");
+        styleButton(submitButton, buttonBgColor, buttonFgColor, buttonHoverColor, buttonFont);
 
-        gbc.insets = new Insets(5,5,5,5);
+        resetButton = new JButton("Reset");
+        styleButton(resetButton, buttonBgColor, buttonFgColor, buttonHoverColor, buttonFont);
+
+        gbc.insets = new Insets(8, 8, 8, 8);
         gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0; gbc.gridy = 0;
@@ -110,15 +135,34 @@ public class TeacherRegistrationPanel extends JPanel {
         add(tableScrollPane, BorderLayout.CENTER);
 
         // Bottom panel for course assignment
-        JPanel coursePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel coursePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         courseComboBox = new JComboBox<>();
+        courseComboBox.setPreferredSize(new Dimension(250, 25));
         assignCourseButton = new JButton("Assign Selected Teacher to Course");
+        styleButton(assignCourseButton, buttonBgColor, buttonFgColor, buttonHoverColor, buttonFont);
 
         coursePanel.add(new JLabel("Select Course:"));
         coursePanel.add(courseComboBox);
         coursePanel.add(assignCourseButton);
 
         add(coursePanel, BorderLayout.SOUTH);
+    }
+
+    private void styleButton(JButton button, Color bgColor, Color fgColor, Color hoverColor, Font font) {
+        button.setFont(font);
+        button.setFocusPainted(false);
+        button.setBackground(bgColor);
+        button.setForeground(fgColor);
+        button.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(hoverColor);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(bgColor);
+            }
+        });
     }
 
     /**
