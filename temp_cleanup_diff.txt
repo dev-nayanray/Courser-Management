@@ -1,0 +1,86 @@
+SEARCH
+SEARCH
+SEARCH
+SEARCH
+SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
+SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
+SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
+SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
+SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
+SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
+++SEARCH
++++<<<<<<< SEARCH
++++    /**
++++     * Returns the text in the search field.
++++     * @return search text
++++     */
++++    public String getSearchText() {
++++        return searchField.getText().trim();
++++    }
++++=======
++    /**
++     * Returns the text in the search field.
++     * @return search text
++     */
++    public String getSearchText() {
++        return searchField.getText().trim();
++    }

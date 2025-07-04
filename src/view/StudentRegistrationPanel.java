@@ -14,6 +14,13 @@ import java.util.List;
  * Provides form fields to input student details, buttons to submit or reset,
  * a table to display students, and controls to register students to courses.
  */
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
+import java.awt.Font;
+
 public class StudentRegistrationPanel extends JPanel {
     private JTextField idField;
     private JTextField firstNameField;
@@ -31,34 +38,110 @@ public class StudentRegistrationPanel extends JPanel {
     private JButton registerCourseButton;
 
     public StudentRegistrationPanel() {
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(10, 10));
+        setBorder(new EmptyBorder(10, 10, 10, 10));
+        Font labelFont = new Font("Segoe UI", Font.PLAIN, 14);
+        Font fieldFont = new Font("Segoe UI", Font.PLAIN, 14);
+        Font buttonFont = new Font("Segoe UI", Font.BOLD, 14);
 
-        // Top panel for student registration form
+        // Top panel for student registration form with titled border
         JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBorder(new TitledBorder(new LineBorder(Color.GRAY, 1, true), "Student Information"));
         GridBagConstraints gbc = new GridBagConstraints();
 
         JLabel idLabel = new JLabel("Student ID:");
+        idLabel.setFont(labelFont);
         idField = new JTextField(15);
+        idField.setFont(fieldFont);
+        idField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180)),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        idField.setBackground(Color.WHITE);
 
         JLabel firstNameLabel = new JLabel("First Name:");
+        firstNameLabel.setFont(labelFont);
         firstNameField = new JTextField(15);
+        firstNameField.setFont(fieldFont);
+        firstNameField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180)),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        firstNameField.setBackground(Color.WHITE);
 
         JLabel lastNameLabel = new JLabel("Last Name:");
+        lastNameLabel.setFont(labelFont);
         lastNameField = new JTextField(15);
+        lastNameField.setFont(fieldFont);
+        lastNameField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180)),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        lastNameField.setBackground(Color.WHITE);
 
         JLabel emailLabel = new JLabel("Email:");
+        emailLabel.setFont(labelFont);
         emailField = new JTextField(15);
+        emailField.setFont(fieldFont);
+        emailField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180)),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        emailField.setBackground(Color.WHITE);
 
         JLabel majorLabel = new JLabel("Major:");
+        majorLabel.setFont(labelFont);
         majorField = new JTextField(15);
+        majorField.setFont(fieldFont);
+        majorField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180)),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        majorField.setBackground(Color.WHITE);
 
         JLabel yearLabel = new JLabel("Year:");
+        yearLabel.setFont(labelFont);
         yearField = new JTextField(15);
+        yearField.setFont(fieldFont);
+        yearField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(180, 180, 180)),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)
+        ));
+        yearField.setBackground(Color.WHITE);
 
         submitButton = new JButton("Submit");
-        resetButton = new JButton("Reset");
+        submitButton.setFont(buttonFont);
+        submitButton.setFocusPainted(false);
+        submitButton.setBackground(new Color(70, 130, 180));
+        submitButton.setForeground(Color.WHITE);
+        submitButton.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        submitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        submitButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                submitButton.setBackground(new Color(100, 149, 237));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                submitButton.setBackground(new Color(70, 130, 180));
+            }
+        });
 
-        gbc.insets = new Insets(5,5,5,5);
+        resetButton = new JButton("Reset");
+        resetButton.setFont(buttonFont);
+        resetButton.setFocusPainted(false);
+        resetButton.setBackground(new Color(220, 20, 60));
+        resetButton.setForeground(Color.WHITE);
+        resetButton.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        resetButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        resetButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                resetButton.setBackground(new Color(255, 69, 0));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                resetButton.setBackground(new Color(220, 20, 60));
+            }
+        });
+
+        gbc.insets = new Insets(10,10,10,10);
         gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0; gbc.gridy = 0;
@@ -98,7 +181,7 @@ public class StudentRegistrationPanel extends JPanel {
 
         add(formPanel, BorderLayout.NORTH);
 
-        // Center panel for student table
+        // Center panel for student table with titled border
         studentTableModel = new DefaultTableModel(new Object[]{"ID", "First Name", "Last Name", "Email", "Major", "Year"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -106,15 +189,62 @@ public class StudentRegistrationPanel extends JPanel {
             }
         };
         studentTable = new JTable(studentTableModel);
-        JScrollPane tableScrollPane = new JScrollPane(studentTable);
-        add(tableScrollPane, BorderLayout.CENTER);
+        studentTable.setFont(fieldFont);
+        studentTable.setRowHeight(28);
+        studentTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 15));
+        studentTable.getTableHeader().setReorderingAllowed(false);
+        studentTable.getTableHeader().setBackground(new Color(70, 130, 180));
+        studentTable.getTableHeader().setForeground(Color.WHITE);
+        studentTable.setSelectionBackground(new Color(100, 149, 237));
+        studentTable.setSelectionForeground(Color.WHITE);
 
-        // Bottom panel for course registration
-        JPanel coursePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        // Alternating row colors
+        studentTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            private final Color evenColor = new Color(245, 245, 245);
+            private final Color oddColor = Color.WHITE;
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                                                           boolean isSelected, boolean hasFocus,
+                                                           int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (!isSelected) {
+                    c.setBackground(row % 2 == 0 ? evenColor : oddColor);
+                }
+                return c;
+            }
+        });
+
+        JScrollPane tableScrollPane = new JScrollPane(studentTable);
+        JPanel tablePanel = new JPanel(new BorderLayout());
+        tablePanel.setBorder(new TitledBorder(new LineBorder(new Color(70, 130, 180), 1, true), "Registered Students"));
+        tablePanel.add(tableScrollPane, BorderLayout.CENTER);
+        add(tablePanel, BorderLayout.CENTER);
+
+        // Bottom panel for course registration with titled border
+        JPanel coursePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 15));
+        coursePanel.setBorder(new TitledBorder(new LineBorder(new Color(70, 130, 180), 1, true), "Course Enrollment"));
         courseComboBox = new JComboBox<>();
+        courseComboBox.setFont(fieldFont);
+        courseComboBox.setBorder(BorderFactory.createLineBorder(new Color(180, 180, 180)));
         registerCourseButton = new JButton("Register Selected Student to Course");
+        registerCourseButton.setFont(buttonFont);
+        registerCourseButton.setFocusPainted(false);
+        registerCourseButton.setBackground(new Color(70, 130, 180));
+        registerCourseButton.setForeground(Color.WHITE);
+        registerCourseButton.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        registerCourseButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        registerCourseButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                registerCourseButton.setBackground(new Color(100, 149, 237));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                registerCourseButton.setBackground(new Color(70, 130, 180));
+            }
+        });
 
         coursePanel.add(new JLabel("Select Course:"));
+        coursePanel.getComponent(0).setFont(labelFont);
         coursePanel.add(courseComboBox);
         coursePanel.add(registerCourseButton);
 
