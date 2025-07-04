@@ -88,9 +88,25 @@ public class MainApp extends JFrame {
 
         add(tabbedPane);
 
-        // Apply modern look and feel
+        // Apply modern look and feel with custom colors
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+
+            UIManager.put("control", new java.awt.Color(230, 230, 250)); // Lavender background
+            UIManager.put("info", new java.awt.Color(242, 242, 189));
+            UIManager.put("nimbusBase", new java.awt.Color(70, 130, 180)); // Steel blue
+            UIManager.put("nimbusAlertYellow", new java.awt.Color(248, 187, 0));
+            UIManager.put("nimbusDisabledText", new java.awt.Color(142, 143, 145));
+            UIManager.put("nimbusFocus", new java.awt.Color(115, 164, 209));
+            UIManager.put("nimbusGreen", new java.awt.Color(176, 179, 50));
+            UIManager.put("nimbusInfoBlue", new java.awt.Color(66, 139, 221));
+            UIManager.put("nimbusLightBackground", new java.awt.Color(255, 255, 255));
+            UIManager.put("nimbusOrange", new java.awt.Color(191, 98, 4));
+            UIManager.put("nimbusRed", new java.awt.Color(169, 46, 34));
+            UIManager.put("nimbusSelectedText", new java.awt.Color(255, 255, 255));
+            UIManager.put("nimbusSelectionBackground", new java.awt.Color(57, 105, 138));
+            UIManager.put("text", new java.awt.Color(50, 50, 50));
+
             SwingUtilities.updateComponentTreeUI(this);
         } catch (Exception e) {
             // Ignore and use default
