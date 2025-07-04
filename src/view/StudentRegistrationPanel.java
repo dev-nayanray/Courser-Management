@@ -1,14 +1,18 @@
 package view;
 
 import model.Student;
+import model.Course;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
- * Swing panel for student registration.
- * Provides form fields to input student details and buttons to submit or reset.
+ * Swing panel for student registration and course enrollment.
+ * Provides form fields to input student details, buttons to submit or reset,
+ * a table to display students, and controls to register students to courses.
  */
 public class StudentRegistrationPanel extends JPanel {
     private JTextField idField;
@@ -20,8 +24,17 @@ public class StudentRegistrationPanel extends JPanel {
     private JButton submitButton;
     private JButton resetButton;
 
+    private JTable studentTable;
+    private DefaultTableModel studentTableModel;
+
+    private JComboBox<Course> courseComboBox;
+    private JButton registerCourseButton;
+
     public StudentRegistrationPanel() {
-        setLayout(new GridBagLayout());
+        setLayout(new BorderLayout());
+
+        // Top panel for student registration form
+        JPanel formPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
         JLabel idLabel = new JLabel("Student ID:");
@@ -49,39 +62,63 @@ public class StudentRegistrationPanel extends JPanel {
         gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0; gbc.gridy = 0;
-        add(idLabel, gbc);
+        formPanel.add(idLabel, gbc);
         gbc.gridx = 1;
-        add(idField, gbc);
+        formPanel.add(idField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 1;
-        add(firstNameLabel, gbc);
+        formPanel.add(firstNameLabel, gbc);
         gbc.gridx = 1;
-        add(firstNameField, gbc);
+        formPanel.add(firstNameField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 2;
-        add(lastNameLabel, gbc);
+        formPanel.add(lastNameLabel, gbc);
         gbc.gridx = 1;
-        add(lastNameField, gbc);
+        formPanel.add(lastNameField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 3;
-        add(emailLabel, gbc);
+        formPanel.add(emailLabel, gbc);
         gbc.gridx = 1;
-        add(emailField, gbc);
+        formPanel.add(emailField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 4;
-        add(majorLabel, gbc);
+        formPanel.add(majorLabel, gbc);
         gbc.gridx = 1;
-        add(majorField, gbc);
+        formPanel.add(majorField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 5;
-        add(yearLabel, gbc);
+        formPanel.add(yearLabel, gbc);
         gbc.gridx = 1;
-        add(yearField, gbc);
+        formPanel.add(yearField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 6;
-        add(submitButton, gbc);
+        formPanel.add(submitButton, gbc);
         gbc.gridx = 1;
-        add(resetButton, gbc);
+        formPanel.add(resetButton, gbc);
+
+        add(formPanel, BorderLayout.NORTH);
+
+        // Center panel for student table
+        studentTableModel = new DefaultTableModel(new Object[]{"ID", "First Name", "Last Name", "Email", "Major", "Year"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make table non-editable
+            }
+        };
+        studentTable = new JTable(studentTableModel);
+        JScrollPane tableScrollPane = new JScrollPane(studentTable);
+        add(tableScrollPane, BorderLayout.CENTER);
+
+        // Bottom panel for course registration
+        JPanel coursePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        courseComboBox = new JComboBox<>();
+        registerCourseButton = new JButton("Register Selected Student to Course");
+
+        coursePanel.add(new JLabel("Select Course:"));
+        coursePanel.add(courseComboBox);
+        coursePanel.add(registerCourseButton);
+
+        add(coursePanel, BorderLayout.SOUTH);
     }
 
     /**
@@ -126,5 +163,68 @@ public class StudentRegistrationPanel extends JPanel {
      */
     public void addResetListener(ActionListener listener) {
         resetButton.addActionListener(listener);
+    }
+
+    /**
+     * Adds an ActionListener to the register course button.
+     * @param listener the ActionListener
+     */
+    public void addRegisterCourseListener(ActionListener listener) {
+        registerCourseButton.addActionListener(listener);
+    }
+
+    /**
+     * Updates the student table with the given list of students.
+     * @param students list of students
+     */
+    public void updateStudentTable(List<Student> students) {
+        studentTableModel.setRowCount(0);
+        for (Student s : students) {
+            studentTableModel.addRow(new Object[]{
+                    s.getId(),
+                    s.getFirstName(),
+                    s.getLastName(),
+                    s.getEmail(),
+                    s.getMajor(),
+                    s.getYear()
+            });
+        }
+    }
+
+    /**
+     * Returns the currently selected student in the table.
+     * @return selected Student or null if none selected
+     */
+    public Student getSelectedStudent() {
+        int selectedRow = studentTable.getSelectedRow();
+        if (selectedRow == -1) {
+            return null;
+        }
+        int id = (int) studentTableModel.getValueAt(selectedRow, 0);
+        String firstName = (String) studentTableModel.getValueAt(selectedRow, 1);
+        String lastName = (String) studentTableModel.getValueAt(selectedRow, 2);
+        String email = (String) studentTableModel.getValueAt(selectedRow, 3);
+        String major = (String) studentTableModel.getValueAt(selectedRow, 4);
+        int year = (int) studentTableModel.getValueAt(selectedRow, 5);
+        return new Student(id, firstName, lastName, email, major, year);
+    }
+
+    /**
+     * Updates the course combo box with the given list of courses.
+     * @param courses list of courses
+     */
+    public void updateCourseComboBox(List<Course> courses) {
+        courseComboBox.removeAllItems();
+        for (Course c : courses) {
+            courseComboBox.addItem(c);
+        }
+    }
+
+    /**
+     * Returns the currently selected course in the combo box.
+     * @return selected Course or null if none selected
+     */
+    public Course getSelectedCourse() {
+        return (Course) courseComboBox.getSelectedItem();
     }
 }

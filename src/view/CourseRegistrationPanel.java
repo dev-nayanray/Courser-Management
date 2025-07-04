@@ -16,6 +16,9 @@ import java.util.List;
 public class CourseRegistrationPanel extends JPanel {
     private JTextField courseIdField;
     private JTextField courseNameField;
+    private JTextField scheduleField;
+    private JTextField creditsField;
+    private JTextField maxStudentsField;
     private JComboBox<Teacher> teacherComboBox;
     private JList<Student> studentList;
     private DefaultListModel<Student> studentListModel;
@@ -33,6 +36,15 @@ public class CourseRegistrationPanel extends JPanel {
 
         JLabel courseNameLabel = new JLabel("Course Name:");
         courseNameField = new JTextField(15);
+
+        JLabel scheduleLabel = new JLabel("Schedule:");
+        scheduleField = new JTextField(15);
+
+        JLabel creditsLabel = new JLabel("Credits:");
+        creditsField = new JTextField(15);
+
+        JLabel maxStudentsLabel = new JLabel("Max Students:");
+        maxStudentsField = new JTextField(15);
 
         JLabel teacherLabel = new JLabel("Teacher:");
         teacherComboBox = new JComboBox<>();
@@ -69,24 +81,87 @@ public class CourseRegistrationPanel extends JPanel {
         add(courseNameField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 2;
+        add(scheduleLabel, gbc);
+        gbc.gridx = 1;
+        add(scheduleField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 3;
+        add(creditsLabel, gbc);
+        gbc.gridx = 1;
+        add(creditsField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 4;
+        add(maxStudentsLabel, gbc);
+        gbc.gridx = 1;
+        add(maxStudentsField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 5;
         add(teacherLabel, gbc);
         gbc.gridx = 1;
         add(teacherComboBox, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridx = 0; gbc.gridy = 6;
         add(studentsLabel, gbc);
         gbc.gridx = 1;
         add(studentListScrollPane, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 4;
+        gbc.gridx = 0; gbc.gridy = 7;
         add(addStudentButton, gbc);
         gbc.gridx = 1;
         add(removeStudentButton, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 5;
+        gbc.gridx = 0; gbc.gridy = 8;
         add(submitButton, gbc);
         gbc.gridx = 1;
         add(resetButton, gbc);
+
+        // Additional controls for search and print
+        gbc.gridx = 0; gbc.gridy = 9;
+        add(new JLabel("Search Course by ID:"), gbc);
+        gbc.gridx = 1;
+        JTextField searchField = new JTextField(10);
+        add(searchField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 10;
+        JButton searchButton = new JButton("Search");
+        add(searchButton, gbc);
+
+        gbc.gridx = 1; gbc.gridy = 10;
+        JButton printStudentDetailsButton = new JButton("Print Student Details");
+        add(printStudentDetailsButton, gbc);
+
+        // Expose these components for controller
+        this.searchField = searchField;
+        this.searchButton = searchButton;
+        this.printStudentDetailsButton = printStudentDetailsButton;
+    }
+
+    private JTextField searchField;
+    private JButton searchButton;
+    private JButton printStudentDetailsButton;
+
+    /**
+     * Returns the text in the search field.
+     * @return search text
+     */
+    public String getSearchText() {
+        return searchField.getText().trim();
+    }
+
+    /**
+     * Adds an ActionListener to the search button.
+     * @param listener the ActionListener
+     */
+    public void addSearchListener(ActionListener listener) {
+        searchButton.addActionListener(listener);
+    }
+
+    /**
+     * Adds an ActionListener to the print student details button.
+     * @param listener the ActionListener
+     */
+    public void addPrintStudentDetailsListener(ActionListener listener) {
+        printStudentDetailsButton.addActionListener(listener);
     }
 
     /**
@@ -97,6 +172,9 @@ public class CourseRegistrationPanel extends JPanel {
     public Course getCourseFromForm() throws NumberFormatException {
         int courseId = Integer.parseInt(courseIdField.getText().trim());
         String courseName = courseNameField.getText().trim();
+        String schedule = scheduleField.getText().trim();
+        int credits = Integer.parseInt(creditsField.getText().trim());
+        int maxStudents = Integer.parseInt(maxStudentsField.getText().trim());
         Teacher teacher = (Teacher) teacherComboBox.getSelectedItem();
 
         if (teacher == null) {
@@ -104,10 +182,49 @@ public class CourseRegistrationPanel extends JPanel {
         }
 
         Course course = new Course(courseId, courseName, teacher);
+        course.setSchedule(schedule);
+        course.setCredits(credits);
+        course.setMaxStudents(maxStudents);
         for (int i = 0; i < studentListModel.size(); i++) {
             course.addStudent(studentListModel.get(i));
         }
         return course;
+    }
+
+    // New public setter methods for controller to update form fields and student list
+
+    public void setCourseIdField(String text) {
+        courseIdField.setText(text);
+    }
+
+    public void setCourseNameField(String text) {
+        courseNameField.setText(text);
+    }
+
+    public void setScheduleField(String text) {
+        scheduleField.setText(text);
+    }
+
+    public void setCreditsField(String text) {
+        creditsField.setText(text);
+    }
+
+    public void setMaxStudentsField(String text) {
+        maxStudentsField.setText(text);
+    }
+
+    public void setTeacherComboBoxSelectedItem(Teacher teacher) {
+        teacherComboBox.setSelectedItem(teacher);
+    }
+
+    public void clearStudentList() {
+        studentListModel.clear();
+    }
+
+    public void addStudentToListModel(Student student) {
+        if (!studentListModel.contains(student)) {
+            studentListModel.addElement(student);
+        }
     }
 
     /**
@@ -116,6 +233,9 @@ public class CourseRegistrationPanel extends JPanel {
     public void clearForm() {
         courseIdField.setText("");
         courseNameField.setText("");
+        scheduleField.setText("");
+        creditsField.setText("");
+        maxStudentsField.setText("");
         if (teacherComboBox.getItemCount() > 0) {
             teacherComboBox.setSelectedIndex(0);
         }

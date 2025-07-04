@@ -67,11 +67,27 @@ public class DatabaseHelper {
                 "FOREIGN KEY(studentId) REFERENCES students(id)" +
                 ");";
 
+        String createMarksTable = "CREATE TABLE IF NOT EXISTS marks (" +
+                "courseId INTEGER," +
+                "studentId INTEGER," +
+                "marks INTEGER," +
+                "PRIMARY KEY(courseId, studentId)," +
+                "FOREIGN KEY(courseId) REFERENCES courses(courseId)," +
+                "FOREIGN KEY(studentId) REFERENCES students(id)" +
+                ");";
+
+        String createDepartmentTable = "CREATE TABLE IF NOT EXISTS departments (" +
+                "id INTEGER PRIMARY KEY," +
+                "name TEXT NOT NULL" +
+                ");";
+
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(createStudentTable);
             stmt.execute(createTeacherTable);
             stmt.execute(createCourseTable);
             stmt.execute(createEnrollmentTable);
+            stmt.execute(createMarksTable);
+            stmt.execute(createDepartmentTable);
         }
     }
 
@@ -416,7 +432,7 @@ public class DatabaseHelper {
      * @param studentId the student ID
      * @throws SQLException if SQL execution fails
      */
-    private void addEnrollment(int courseId, int studentId) throws SQLException {
+    public void addEnrollment(int courseId, int studentId) throws SQLException {
         String sql = "INSERT OR IGNORE INTO enrollments (courseId, studentId) VALUES (?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, courseId);
@@ -439,12 +455,27 @@ public class DatabaseHelper {
     }
 
     /**
+     * Removes a specific enrollment record linking a student to a course.
+     * @param courseId the course ID
+     * @param studentId the student ID
+     * @throws SQLException if SQL execution fails
+     */
+    public void removeEnrollment(int courseId, int studentId) throws SQLException {
+        String sql = "DELETE FROM enrollments WHERE courseId = ? AND studentId = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, courseId);
+            pstmt.setInt(2, studentId);
+            pstmt.executeUpdate();
+        }
+    }
+
+    /**
      * Retrieves all students enrolled in a given course.
      * @param courseId the course ID
      * @return list of students
      * @throws SQLException if SQL execution fails
      */
-    private List<Student> getStudentsByCourse(int courseId) throws SQLException {
+    public List<Student> getStudentsByCourse(int courseId) throws SQLException {
         List<Student> students = new ArrayList<>();
         String sql = "SELECT s.* FROM students s " +
                 "JOIN enrollments e ON s.id = e.studentId " +
@@ -474,5 +505,83 @@ public class DatabaseHelper {
         if (connection != null) {
             connection.close();
         }
+    }
+
+    /**
+     * Assigns marks to a student for a course.
+     * @param courseId the course ID
+     * @param studentId the student ID
+     * @param marks the marks to assign
+     * @throws SQLException if SQL execution fails
+     */
+    public void assignMarks(int courseId, int studentId, int marks) throws SQLException {
+        String sql = "INSERT OR REPLACE INTO marks (courseId, studentId, marks) VALUES (?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, courseId);
+            pstmt.setInt(2, studentId);
+            pstmt.setInt(3, marks);
+            pstmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Generates a grade report for a course.
+     * @param courseId the course ID
+     * @return formatted grade report string
+     * @throws SQLException if SQL execution fails
+     */
+    public String generateGradeReport(int courseId) throws SQLException {
+        StringBuilder report = new StringBuilder();
+        String sql = "SELECT s.id, s.firstName, s.lastName, m.marks FROM students s " +
+                "JOIN marks m ON s.id = m.studentId " +
+                "WHERE m.courseId = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, courseId);
+            ResultSet rs = pstmt.executeQuery();
+            report.append("Grade Report for Course ID: ").append(courseId).append("\\n");
+            report.append("Student ID | Name | Marks\\n");
+            report.append("--------------------------------\\n");
+            while (rs.next()) {
+                int studentId = rs.getInt("id");
+                String name = rs.getString("firstName") + " " + rs.getString("lastName");
+                int marks = rs.getInt("marks");
+                report.append(studentId).append(" | ").append(name).append(" | ").append(marks).append("\\n");
+            }
+        }
+        return report.toString();
+    }
+
+    /**
+     * Adds a new department to the database.
+     * @param department the department to add
+     * @throws SQLException if SQL execution fails
+     */
+    public void addDepartment(model.Department department) throws SQLException {
+        String sql = "INSERT INTO departments (id, name) VALUES (?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, department.getId());
+            pstmt.setString(2, department.getName());
+            pstmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Retrieves all departments.
+     * @return list of departments
+     * @throws SQLException if SQL execution fails
+     */
+    public java.util.List<model.Department> getAllDepartments() throws SQLException {
+        java.util.List<model.Department> departments = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM departments";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                departments.add(new model.Department(
+                        rs.getInt("id"),
+                        rs.getString("name")
+                ));
+            }
+        }
+        return departments;
     }
 }
