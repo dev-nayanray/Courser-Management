@@ -46,40 +46,45 @@ public class MainApp extends JFrame {
                     "Database Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        // Student Panel
+        // Initialize panels but do not add data tabs yet
         StudentRegistrationPanel studentPanel = new StudentRegistrationPanel();
         StudentController studentController = new StudentController(studentPanel, dbHelper);
-        tabbedPane.addTab("Students", studentPanel);
 
-        // Teacher Panel
         TeacherRegistrationPanel teacherPanel = new TeacherRegistrationPanel();
         TeacherController teacherController = new TeacherController(teacherPanel, dbHelper);
-        tabbedPane.addTab("Teachers", teacherPanel);
 
-        // Course Panel
         CourseRegistrationPanel coursePanel = new CourseRegistrationPanel(teachers, students);
         CourseController courseController = new CourseController(coursePanel, dbHelper, teachers, students);
-        tabbedPane.addTab("Courses", coursePanel);
 
-        // Department Panel
         DepartmentPanel departmentPanel = new DepartmentPanel();
         DepartmentController departmentController = new DepartmentController(departmentPanel, dbHelper);
-        tabbedPane.addTab("Departments", departmentPanel);
 
-        // Enrollment Panel
         EnrollmentPanel enrollmentPanel = new EnrollmentPanel(courses);
         EnrollmentController enrollmentController = new EnrollmentController(enrollmentPanel, dbHelper);
-        tabbedPane.addTab("Enrollment", enrollmentPanel);
 
-        // Marks Panel
         MarksPanel marksPanel = new MarksPanel(courses, students);
         MarksController marksController = new MarksController(marksPanel, dbHelper);
-        tabbedPane.addTab("Marks", marksPanel);
 
         // Login Panel
         LoginPanel loginPanel = new LoginPanel();
         LoginController loginController = new LoginController(loginPanel);
+
+        // Add only login tab initially
         tabbedPane.addTab("Login", loginPanel);
+
+        // Set login success callback to add other tabs and remove login tab
+        loginController.setLoginSuccessCallback(() -> {
+            SwingUtilities.invokeLater(() -> {
+                tabbedPane.remove(loginPanel);
+                tabbedPane.addTab("Students", studentPanel);
+                tabbedPane.addTab("Teachers", teacherPanel);
+                tabbedPane.addTab("Courses", coursePanel);
+                tabbedPane.addTab("Departments", departmentPanel);
+                tabbedPane.addTab("Enrollment", enrollmentPanel);
+                tabbedPane.addTab("Marks", marksPanel);
+                tabbedPane.setSelectedIndex(0);
+            });
+        });
 
         add(tabbedPane);
 

@@ -20,6 +20,8 @@ public class LoginController {
     private String loggedInUser;
     private String loggedInRole;
 
+    private Runnable loginSuccessCallback;
+
     public LoginController(LoginPanel view) {
         this.view = view;
         this.userPasswordMap = new HashMap<>();
@@ -35,6 +37,10 @@ public class LoginController {
         userRoleMap.put("user", "user");
 
         this.view.addLoginListener(new LoginListener());
+    }
+
+    public void setLoginSuccessCallback(Runnable callback) {
+        this.loginSuccessCallback = callback;
     }
 
     public boolean isLoggedIn() {
@@ -78,6 +84,9 @@ public class LoginController {
 
             // Notify other components or enable/disable panels based on role
             // This can be extended to fire events or callbacks
+            if (loginSuccessCallback != null) {
+                loginSuccessCallback.run();
+            }
         }
     }
 }
