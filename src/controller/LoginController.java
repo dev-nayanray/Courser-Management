@@ -1,3 +1,4 @@
+
 package controller;
 
 import view.LoginPanel;
@@ -5,38 +6,26 @@ import view.LoginPanel;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Controller for handling login and access control.
- * Implements basic password authentication and role-based access.
+ * Controller for handling basic admin-only login with hardcoded credentials and logout functionality.
  */
 public class LoginController {
     private LoginPanel view;
-    private Map<String, String> userPasswordMap; // username -> hashed password
-    private Map<String, String> userRoleMap; // username -> role
 
     private String loggedInUser;
     private String loggedInRole;
 
     private Runnable loginSuccessCallback;
 
+    private static final String ADMIN_USERNAME = "admin";
+    private static final String ADMIN_PASSWORD = "admin123";
+
     public LoginController(LoginPanel view) {
         this.view = view;
-        this.userPasswordMap = new HashMap<>();
-        this.userRoleMap = new HashMap<>();
-
-        // For demo, add a default admin user with password "admin"
-        // Passwords should be hashed in real applications; here plain text for simplicity
-        userPasswordMap.put("admin", "admin");
-        userRoleMap.put("admin", "admin");
-
-        // Add a sample user
-        userPasswordMap.put("user", "user123");
-        userRoleMap.put("user", "user");
-
         this.view.addLoginListener(new LoginListener());
+        this.view.addLogoutListener(new LogoutListener());
+        this.view.setLogoutEnabled(false);
     }
 
     public void setLoginSuccessCallback(Runnable callback) {
@@ -66,27 +55,34 @@ public class LoginController {
                 return;
             }
 
-            if (!userPasswordMap.containsKey(username)) {
-                JOptionPane.showMessageDialog(view, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            String storedPassword = userPasswordMap.get(username);
-            if (!storedPassword.equals(password)) {
+            if (!ADMIN_USERNAME.equals(username) || !ADMIN_PASSWORD.equals(password)) {
                 JOptionPane.showMessageDialog(view, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
             loggedInUser = username;
-            loggedInRole = userRoleMap.get(username);
+            loggedInRole = "admin";
 
             JOptionPane.showMessageDialog(view, "Login successful! Welcome " + loggedInUser + ".", "Success", JOptionPane.INFORMATION_MESSAGE);
 
-            // Notify other components or enable/disable panels based on role
-            // This can be extended to fire events or callbacks
+            view.setLoginEnabled(false);
+            view.setLogoutEnabled(true);
+
             if (loginSuccessCallback != null) {
                 loginSuccessCallback.run();
             }
+        }
+    }
+
+    private class LogoutListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            loggedInUser = null;
+            loggedInRole = null;
+            view.clearFields();
+            view.setLoginEnabled(true);
+            view.setLogoutEnabled(false);
+            JOptionPane.showMessageDialog(view, "Logged out successfully.", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }

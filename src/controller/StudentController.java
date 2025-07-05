@@ -1,6 +1,7 @@
 package controller;
 
 import database.DatabaseHelper;
+import database.DatabaseHelperAssessmentMarks;
 import model.Student;
 import view.StudentRegistrationPanel;
 
@@ -8,25 +9,24 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-
-/**
- * Controller for handling student registration interactions.
- * Connects the StudentRegistrationPanel with the DatabaseHelper.
- */
-import model.Course;
 import java.util.List;
-import java.sql.SQLException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
+import model.Course;
 import javax.swing.JOptionPane;
 
 public class StudentController {
     private StudentRegistrationPanel view;
     private DatabaseHelper dbHelper;
+    private DatabaseHelperAssessmentMarks waitlistHelper;
 
     public StudentController(StudentRegistrationPanel view, DatabaseHelper dbHelper) {
         this.view = view;
         this.dbHelper = dbHelper;
+        try {
+            this.waitlistHelper = new DatabaseHelperAssessmentMarks();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(view, "Failed to connect to waitlist database helper: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         this.view.addSubmitListener(new SubmitListener());
         this.view.addResetListener(e -> view.clearForm());
@@ -85,8 +85,18 @@ public class StudentController {
                     JOptionPane.showMessageDialog(view, "Please select a course from the dropdown.", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                dbHelper.addEnrollment(selectedCourse.getCourseId(), selectedStudent.getId());
-                JOptionPane.showMessageDialog(view, "Student registered to course successfully!");
+                // Check if course is full
+                int enrolledCount = dbHelper.getStudentsByCourse(selectedCourse.getCourseId()).size();
+                int maxCapacity = selectedCourse.getMaxStudents();
+                if (maxCapacity > 0 && enrolledCount >= maxCapacity) {
+                    // Add to waitlist
+                    waitlistHelper.addOrUpdateAssessmentMark(selectedCourse.getCourseId(), selectedStudent.getId(), "waitlist", 1);
+                    JOptionPane.showMessageDialog(view, "Course is full. Student added to waitlist.");
+                } else {
+                    // Enroll student
+                    dbHelper.addEnrollment(selectedCourse.getCourseId(), selectedStudent.getId());
+                    JOptionPane.showMessageDialog(view, "Student registered to course successfully!");
+                }
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(view, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }

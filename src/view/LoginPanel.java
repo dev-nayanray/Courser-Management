@@ -3,6 +3,7 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import util.UIStyleUtil;
 
 /**
  * Basic login panel for admin authentication.
@@ -15,19 +16,26 @@ public class LoginPanel extends JPanel {
 
     public LoginPanel() {
         setLayout(new GridBagLayout());
+        UIStyleUtil.stylePanel(this);
         GridBagConstraints gbc = new GridBagConstraints();
 
         JLabel usernameLabel = new JLabel("Username:");
+        UIStyleUtil.styleLabel(usernameLabel);
         usernameField = new JTextField(15);
+        UIStyleUtil.styleTextField(usernameField);
 
         JLabel passwordLabel = new JLabel("Password:");
+        UIStyleUtil.styleLabel(passwordLabel);
         passwordField = new JPasswordField(15);
+        UIStyleUtil.stylePasswordField(passwordField);
 
         loginButton = new JButton("Login");
+        UIStyleUtil.styleButton(loginButton);
         logoutButton = new JButton("Logout");
+        UIStyleUtil.styleButton(logoutButton);
         logoutButton.setEnabled(false);
 
-        gbc.insets = new Insets(5,5,5,5);
+        gbc.insets = new Insets(15, 15, 15, 15);
         gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0; gbc.gridy = 0;

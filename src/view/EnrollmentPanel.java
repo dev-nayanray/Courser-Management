@@ -9,6 +9,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import util.UIStyleUtil;
+
 /**
  * Swing panel for enrollment management.
  * Allows viewing and managing student enrollments in courses.
@@ -25,12 +27,16 @@ public class EnrollmentPanel extends JPanel {
 
         // Top panel for course selection
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        UIStyleUtil.stylePanel(topPanel);
         courseComboBox = new JComboBox<>();
+        UIStyleUtil.styleComboBox(courseComboBox);
         for (Course c : courses) {
             courseComboBox.addItem(c);
         }
         loadEnrollmentsButton = new JButton("Load Enrollments");
+        UIStyleUtil.styleButton(loadEnrollmentsButton);
         topPanel.add(new JLabel("Select Course:"));
+        UIStyleUtil.styleLabel((JLabel)topPanel.getComponent(0));
         topPanel.add(courseComboBox);
         topPanel.add(loadEnrollmentsButton);
         add(topPanel, BorderLayout.NORTH);
@@ -43,12 +49,16 @@ public class EnrollmentPanel extends JPanel {
             }
         };
         enrollmentTable = new JTable(enrollmentTableModel);
+        UIStyleUtil.styleTable(enrollmentTable);
         JScrollPane scrollPane = new JScrollPane(enrollmentTable);
+        UIStyleUtil.styleScrollPane(scrollPane);
         add(scrollPane, BorderLayout.CENTER);
 
         // Bottom panel for removing enrollment
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        UIStyleUtil.stylePanel(bottomPanel);
         removeEnrollmentButton = new JButton("Remove Selected Enrollment");
+        UIStyleUtil.styleButton(removeEnrollmentButton);
         bottomPanel.add(removeEnrollmentButton);
         add(bottomPanel, BorderLayout.SOUTH);
     }

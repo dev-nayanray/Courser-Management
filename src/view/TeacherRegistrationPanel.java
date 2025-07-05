@@ -10,11 +10,10 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-/**
- * Swing panel for teacher registration and course assignment.
- * Provides form fields to input teacher details, buttons to submit or reset,
- * a table to display teachers, and controls to assign teachers to courses.
- */
+import util.UIStyleUtil;
+import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+
 public class TeacherRegistrationPanel extends JPanel {
     private JTextField idField;
     private JTextField firstNameField;
@@ -33,57 +32,51 @@ public class TeacherRegistrationPanel extends JPanel {
 
     public TeacherRegistrationPanel() {
         setLayout(new BorderLayout());
-
-        // Fonts and colors
-        Font labelFont = new Font("Arial", Font.PLAIN, 14);
-        Font fieldFont = new Font("Arial", Font.PLAIN, 14);
-        Font buttonFont = new Font("Arial", Font.BOLD, 14);
-        Color buttonBgColor = new Color(70, 130, 180);
-        Color buttonHoverColor = new Color(100, 149, 237);
-        Color buttonFgColor = Color.WHITE;
+        UIStyleUtil.stylePanel(this);
 
         // Top panel for teacher registration form with titled border
         JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Teacher Registration", TitledBorder.LEFT, TitledBorder.TOP, labelFont));
+        UIStyleUtil.stylePanel(formPanel);
+        formPanel.setBorder(new TitledBorder(new LineBorder(UIStyleUtil.PRIMARY_COLOR, 1, true), "Teacher Registration"));
         GridBagConstraints gbc = new GridBagConstraints();
 
         JLabel idLabel = new JLabel("Teacher ID:");
-        idLabel.setFont(labelFont);
+        UIStyleUtil.styleLabel(idLabel);
         idField = new JTextField(15);
-        idField.setFont(fieldFont);
+        UIStyleUtil.styleTextField(idField);
 
         JLabel firstNameLabel = new JLabel("First Name:");
-        firstNameLabel.setFont(labelFont);
+        UIStyleUtil.styleLabel(firstNameLabel);
         firstNameField = new JTextField(15);
-        firstNameField.setFont(fieldFont);
+        UIStyleUtil.styleTextField(firstNameField);
 
         JLabel lastNameLabel = new JLabel("Last Name:");
-        lastNameLabel.setFont(labelFont);
+        UIStyleUtil.styleLabel(lastNameLabel);
         lastNameField = new JTextField(15);
-        lastNameField.setFont(fieldFont);
+        UIStyleUtil.styleTextField(lastNameField);
 
         JLabel emailLabel = new JLabel("Email:");
-        emailLabel.setFont(labelFont);
+        UIStyleUtil.styleLabel(emailLabel);
         emailField = new JTextField(15);
-        emailField.setFont(fieldFont);
+        UIStyleUtil.styleTextField(emailField);
 
         JLabel departmentLabel = new JLabel("Department:");
-        departmentLabel.setFont(labelFont);
+        UIStyleUtil.styleLabel(departmentLabel);
         departmentField = new JTextField(15);
-        departmentField.setFont(fieldFont);
+        UIStyleUtil.styleTextField(departmentField);
 
         JLabel titleLabel = new JLabel("Title:");
-        titleLabel.setFont(labelFont);
+        UIStyleUtil.styleLabel(titleLabel);
         titleField = new JTextField(15);
-        titleField.setFont(fieldFont);
+        UIStyleUtil.styleTextField(titleField);
 
         submitButton = new JButton("Submit");
-        styleButton(submitButton, buttonBgColor, buttonFgColor, buttonHoverColor, buttonFont);
+        UIStyleUtil.styleButton(submitButton);
 
         resetButton = new JButton("Reset");
-        styleButton(resetButton, buttonBgColor, buttonFgColor, buttonHoverColor, buttonFont);
+        UIStyleUtil.styleButton(resetButton);
 
-        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0; gbc.gridy = 0;
@@ -123,7 +116,7 @@ public class TeacherRegistrationPanel extends JPanel {
 
         add(formPanel, BorderLayout.NORTH);
 
-        // Center panel for teacher table
+        // Center panel for teacher table with titled border
         teacherTableModel = new DefaultTableModel(new Object[]{"ID", "First Name", "Last Name", "Email", "Department", "Title"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -131,38 +124,48 @@ public class TeacherRegistrationPanel extends JPanel {
             }
         };
         teacherTable = new JTable(teacherTableModel);
-        JScrollPane tableScrollPane = new JScrollPane(teacherTable);
-        add(tableScrollPane, BorderLayout.CENTER);
+        UIStyleUtil.styleTable(teacherTable);
+        teacherTable.setRowHeight(28);
 
-        // Bottom panel for course assignment
-        JPanel coursePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        // Alternating row colors
+        teacherTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            private final Color evenColor = UIStyleUtil.BACKGROUND_COLOR;
+            private final Color oddColor = UIStyleUtil.PANEL_BACKGROUND_COLOR;
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                                                           boolean isSelected, boolean hasFocus,
+                                                           int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (!isSelected) {
+                    c.setBackground(row % 2 == 0 ? evenColor : oddColor);
+                }
+                return c;
+            }
+        });
+
+        JScrollPane tableScrollPane = new JScrollPane(teacherTable);
+        UIStyleUtil.styleScrollPane(tableScrollPane);
+        JPanel tablePanel = new JPanel(new BorderLayout());
+        UIStyleUtil.stylePanel(tablePanel);
+        tablePanel.setBorder(new TitledBorder(new LineBorder(UIStyleUtil.PRIMARY_COLOR, 1, true), "Registered Teachers"));
+        tablePanel.add(tableScrollPane, BorderLayout.CENTER);
+        add(tablePanel, BorderLayout.CENTER);
+
+        // Bottom panel for course assignment with titled border
+        JPanel coursePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 15));
+        UIStyleUtil.stylePanel(coursePanel);
         courseComboBox = new JComboBox<>();
-        courseComboBox.setPreferredSize(new Dimension(250, 25));
+        UIStyleUtil.styleComboBox(courseComboBox);
         assignCourseButton = new JButton("Assign Selected Teacher to Course");
-        styleButton(assignCourseButton, buttonBgColor, buttonFgColor, buttonHoverColor, buttonFont);
+        UIStyleUtil.styleButton(assignCourseButton);
 
         coursePanel.add(new JLabel("Select Course:"));
+        UIStyleUtil.styleLabel((JLabel) coursePanel.getComponent(0));
         coursePanel.add(courseComboBox);
         coursePanel.add(assignCourseButton);
 
         add(coursePanel, BorderLayout.SOUTH);
-    }
-
-    private void styleButton(JButton button, Color bgColor, Color fgColor, Color hoverColor, Font font) {
-        button.setFont(font);
-        button.setFocusPainted(false);
-        button.setBackground(bgColor);
-        button.setForeground(fgColor);
-        button.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(hoverColor);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                button.setBackground(bgColor);
-            }
-        });
     }
 
     /**

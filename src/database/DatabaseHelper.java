@@ -76,9 +76,34 @@ public class DatabaseHelper {
                 "FOREIGN KEY(studentId) REFERENCES students(id)" +
                 ");";
 
+        String createAssessmentMarksTable = "CREATE TABLE IF NOT EXISTS assessment_marks (" +
+                "courseId INTEGER," +
+                "studentId INTEGER," +
+                "assessmentType TEXT," +
+                "marks INTEGER," +
+                "PRIMARY KEY(courseId, studentId, assessmentType)," +
+                "FOREIGN KEY(courseId) REFERENCES courses(courseId)," +
+                "FOREIGN KEY(studentId) REFERENCES students(id)" +
+                ");";
+
         String createDepartmentTable = "CREATE TABLE IF NOT EXISTS departments (" +
                 "id INTEGER PRIMARY KEY," +
                 "name TEXT NOT NULL" +
+                ");";
+
+        String createUsersTable = "CREATE TABLE IF NOT EXISTS users (" +
+                "username TEXT PRIMARY KEY," +
+                "passwordHash TEXT NOT NULL," +
+                "role TEXT NOT NULL" +
+                ");";
+
+        String createWaitlistTable = "CREATE TABLE IF NOT EXISTS waitlist (" +
+                "courseId INTEGER," +
+                "studentId INTEGER," +
+                "position INTEGER," +
+                "PRIMARY KEY(courseId, studentId)," +
+                "FOREIGN KEY(courseId) REFERENCES courses(courseId)," +
+                "FOREIGN KEY(studentId) REFERENCES students(id)" +
                 ");";
 
         try (Statement stmt = connection.createStatement()) {
@@ -87,7 +112,10 @@ public class DatabaseHelper {
             stmt.execute(createCourseTable);
             stmt.execute(createEnrollmentTable);
             stmt.execute(createMarksTable);
+            stmt.execute(createAssessmentMarksTable);
             stmt.execute(createDepartmentTable);
+            stmt.execute(createUsersTable);
+            stmt.execute(createWaitlistTable);
         }
     }
 

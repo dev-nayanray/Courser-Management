@@ -6,11 +6,13 @@ import model.Teacher;
 
 import javax.swing.*;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.table.DefaultTableModel;
+import util.UIStyleUtil;
 
 public class CourseRegistrationPanel extends JPanel {
     private JTextField courseIdField;
@@ -35,160 +37,164 @@ public class CourseRegistrationPanel extends JPanel {
 
     public CourseRegistrationPanel() {
         setLayout(new GridBagLayout());
+        UIStyleUtil.stylePanel(this);
         GridBagConstraints gbc = new GridBagConstraints();
 
         // Initialize components
         JLabel courseIdLabel = new JLabel("Course ID:");
+        UIStyleUtil.styleLabel(courseIdLabel);
         courseIdField = new JTextField(10);
+        UIStyleUtil.styleTextField(courseIdField);
 
         JLabel courseNameLabel = new JLabel("Course Name:");
+        UIStyleUtil.styleLabel(courseNameLabel);
         courseNameField = new JTextField(10);
+        UIStyleUtil.styleTextField(courseNameField);
 
         JLabel scheduleLabel = new JLabel("Schedule:");
+        UIStyleUtil.styleLabel(scheduleLabel);
         scheduleField = new JTextField(10);
+        UIStyleUtil.styleTextField(scheduleField);
 
         JLabel creditsLabel = new JLabel("Credits:");
+        UIStyleUtil.styleLabel(creditsLabel);
         creditsField = new JTextField(10);
+        UIStyleUtil.styleTextField(creditsField);
 
         JLabel maxStudentsLabel = new JLabel("Max Students:");
+        UIStyleUtil.styleLabel(maxStudentsLabel);
         maxStudentsField = new JTextField(10);
+        UIStyleUtil.styleTextField(maxStudentsField);
 
         JLabel teacherLabel = new JLabel("Teacher:");
+        UIStyleUtil.styleLabel(teacherLabel);
         teacherComboBox = new JComboBox<>();
+        UIStyleUtil.styleComboBox(teacherComboBox);
 
         JLabel studentsLabel = new JLabel("Enrolled Students:");
+        UIStyleUtil.styleLabel(studentsLabel);
         studentListModel = new DefaultListModel<>();
         studentList = new JList<>(studentListModel);
+        UIStyleUtil.styleList(studentList);
         JScrollPane studentListScrollPane = new JScrollPane(studentList);
+        UIStyleUtil.styleScrollPane(studentListScrollPane);
 
-        addStudentButton = new JButton("Add Student");
-        removeStudentButton = new JButton("Remove Student");
-        submitButton = new JButton("Submit");
-        resetButton = new JButton("Reset");
-
-        Font labelFont = new Font("Arial", Font.PLAIN, 14);
-        Font fieldFont = new Font("Arial", Font.PLAIN, 14);
-        Font buttonFont = new Font("Arial", Font.BOLD, 14);
-
-        // Set fonts
-        courseIdLabel.setFont(labelFont);
-        courseIdField.setFont(fieldFont);
-        courseNameLabel.setFont(labelFont);
-        courseNameField.setFont(fieldFont);
-        scheduleLabel.setFont(labelFont);
-        scheduleField.setFont(fieldFont);
-        creditsLabel.setFont(labelFont);
-        creditsField.setFont(fieldFont);
-        maxStudentsLabel.setFont(labelFont);
-        maxStudentsField.setFont(fieldFont);
-        teacherLabel.setFont(labelFont);
-        teacherComboBox.setFont(fieldFont);
-        studentsLabel.setFont(labelFont);
-        studentList.setFont(fieldFont);
-        addStudentButton.setFont(buttonFont);
-        removeStudentButton.setFont(buttonFont);
-        submitButton.setFont(buttonFont);
-        resetButton.setFont(buttonFont);
+addStudentButton = new JButton("Add Student");
+UIStyleUtil.styleButton(addStudentButton);
+UIStyleUtil.addTooltip(addStudentButton, "Add a student to the course");
+removeStudentButton = new JButton("Remove Student");
+UIStyleUtil.styleButton(removeStudentButton);
+UIStyleUtil.addTooltip(removeStudentButton, "Remove selected student from the course");
+submitButton = new JButton("Submit");
+UIStyleUtil.styleButton(submitButton);
+UIStyleUtil.addTooltip(submitButton, "Submit the course registration form");
+resetButton = new JButton("Reset");
+UIStyleUtil.styleButton(resetButton);
+UIStyleUtil.addTooltip(resetButton, "Reset the course registration form");
 
         // Layout components using GridBagLayout
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(15, 15, 15, 15);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        gbc.gridx = 0; gbc.gridy = 0;
-        add(courseIdLabel, gbc);
-        gbc.gridx = 1;
-        add(courseIdField, gbc);
+        // Group course details in a panel with titled border
+        JPanel courseDetailsPanel = new JPanel(new GridBagLayout());
+        UIStyleUtil.stylePanel(courseDetailsPanel);
+        courseDetailsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(UIStyleUtil.PRIMARY_COLOR, 1, true), "Course Details"));
+        GridBagConstraints courseGbc = new GridBagConstraints();
+        courseGbc.insets = new Insets(10, 10, 10, 10);
+        courseGbc.fill = GridBagConstraints.HORIZONTAL;
 
-        gbc.gridx = 0; gbc.gridy = 1;
-        add(courseNameLabel, gbc);
-        gbc.gridx = 1;
-        add(courseNameField, gbc);
+        courseGbc.gridx = 0; courseGbc.gridy = 0;
+        courseDetailsPanel.add(courseIdLabel, courseGbc);
+        courseGbc.gridx = 1;
+        courseDetailsPanel.add(courseIdField, courseGbc);
 
-        gbc.gridx = 0; gbc.gridy = 2;
-        add(scheduleLabel, gbc);
-        gbc.gridx = 1;
-        add(scheduleField, gbc);
+        courseGbc.gridx = 0; courseGbc.gridy = 1;
+        courseDetailsPanel.add(courseNameLabel, courseGbc);
+        courseGbc.gridx = 1;
+        courseDetailsPanel.add(courseNameField, courseGbc);
 
-        gbc.gridx = 0; gbc.gridy = 3;
-        add(creditsLabel, gbc);
-        gbc.gridx = 1;
-        add(creditsField, gbc);
+        courseGbc.gridx = 0; courseGbc.gridy = 2;
+        courseDetailsPanel.add(scheduleLabel, courseGbc);
+        courseGbc.gridx = 1;
+        courseDetailsPanel.add(scheduleField, courseGbc);
 
-        gbc.gridx = 0; gbc.gridy = 4;
-        add(maxStudentsLabel, gbc);
-        gbc.gridx = 1;
-        add(maxStudentsField, gbc);
+        courseGbc.gridx = 0; courseGbc.gridy = 3;
+        courseDetailsPanel.add(creditsLabel, courseGbc);
+        courseGbc.gridx = 1;
+        courseDetailsPanel.add(creditsField, courseGbc);
 
-        gbc.gridx = 0; gbc.gridy = 5;
-        add(teacherLabel, gbc);
-        gbc.gridx = 1;
-        add(teacherComboBox, gbc);
+        courseGbc.gridx = 0; courseGbc.gridy = 4;
+        courseDetailsPanel.add(maxStudentsLabel, courseGbc);
+        courseGbc.gridx = 1;
+        courseDetailsPanel.add(maxStudentsField, courseGbc);
 
-        gbc.gridx = 0; gbc.gridy = 6;
-        add(studentsLabel, gbc);
-        gbc.gridx = 1;
-        add(studentListScrollPane, gbc);
+        courseGbc.gridx = 0; courseGbc.gridy = 5;
+        courseDetailsPanel.add(teacherLabel, courseGbc);
+        courseGbc.gridx = 1;
+        courseDetailsPanel.add(teacherComboBox, courseGbc);
 
-        gbc.gridx = 0; gbc.gridy = 7;
-        add(addStudentButton, gbc);
-        gbc.gridx = 1;
-        add(removeStudentButton, gbc);
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        add(courseDetailsPanel, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 8;
-        add(submitButton, gbc);
-        gbc.gridx = 1;
-        add(resetButton, gbc);
+        // Student enrollment panel with titled border
+        JPanel studentEnrollmentPanel = new JPanel(new BorderLayout(10, 10));
+        UIStyleUtil.stylePanel(studentEnrollmentPanel);
+        studentEnrollmentPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(UIStyleUtil.PRIMARY_COLOR, 1, true), "Enrolled Students"));
 
-        // Additional controls for search and print
-        gbc.gridx = 0; gbc.gridy = 9;
-        JLabel searchLabel = new JLabel("Search Course by ID:");
-        searchLabel.setFont(labelFont);
-        add(searchLabel, gbc);
-        gbc.gridx = 1;
+        JScrollPane studentListScrollPane2 = new JScrollPane(studentList);
+        UIStyleUtil.styleScrollPane(studentListScrollPane2);
+        studentEnrollmentPanel.add(studentListScrollPane2, BorderLayout.CENTER);
+
+        JPanel studentButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        UIStyleUtil.stylePanel(studentButtonPanel);
+        if (addStudentButton != null) {
+            studentButtonPanel.add(addStudentButton);
+        }
+        if (removeStudentButton != null) {
+            studentButtonPanel.add(removeStudentButton);
+        }
+        studentEnrollmentPanel.add(studentButtonPanel, BorderLayout.SOUTH);
+
+        gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 2; gbc.fill = GridBagConstraints.BOTH; gbc.weightx = 1.0; gbc.weighty = 0.5;
+        if (studentEnrollmentPanel != null) {
+            add(studentEnrollmentPanel, gbc);
+        }
+
+        // Initialize missing components
         searchField = new JTextField(10);
-        searchField.setFont(fieldFont);
-        searchField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(180, 180, 180)),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-        searchField.setBackground(Color.WHITE);
-        add(searchField, gbc);
-
-        gbc.gridx = 0; gbc.gridy = 10;
+        UIStyleUtil.styleTextField(searchField);
         searchButton = new JButton("Search");
-        searchButton.setFont(buttonFont);
-        searchButton.setFocusPainted(false);
-        searchButton.setBackground(new Color(70, 130, 180));
-        searchButton.setForeground(Color.WHITE);
-        searchButton.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
-        searchButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        searchButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                searchButton.setBackground(new Color(100, 149, 237));
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                searchButton.setBackground(new Color(70, 130, 180));
-            }
-        });
-        add(searchButton, gbc);
-
-        gbc.gridx = 1; gbc.gridy = 10;
+        UIStyleUtil.styleButton(searchButton);
         printStudentDetailsButton = new JButton("Print Student Details");
-        printStudentDetailsButton.setFont(buttonFont);
-        printStudentDetailsButton.setFocusPainted(false);
-        printStudentDetailsButton.setBackground(new Color(70, 130, 180));
-        printStudentDetailsButton.setForeground(Color.WHITE);
-        printStudentDetailsButton.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
-        printStudentDetailsButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        printStudentDetailsButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                printStudentDetailsButton.setBackground(new Color(100, 149, 237));
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                printStudentDetailsButton.setBackground(new Color(70, 130, 180));
-            }
-        });
-        add(printStudentDetailsButton, gbc);
+        UIStyleUtil.styleButton(printStudentDetailsButton);
+
+        // Buttons panel for submit, reset, search, and print
+        JPanel buttonsPanel = new JPanel(new GridBagLayout());
+        UIStyleUtil.stylePanel(buttonsPanel);
+        GridBagConstraints buttonsGbc = new GridBagConstraints();
+        buttonsGbc.insets = new Insets(10, 10, 10, 10);
+        buttonsGbc.fill = GridBagConstraints.HORIZONTAL;
+
+        buttonsGbc.gridx = 0; buttonsGbc.gridy = 0;
+        buttonsPanel.add(submitButton, buttonsGbc);
+        buttonsGbc.gridx = 1;
+        buttonsPanel.add(resetButton, buttonsGbc);
+
+        buttonsGbc.gridx = 0; buttonsGbc.gridy = 1;
+        JLabel searchLabel = new JLabel("Search Course by ID:");
+        UIStyleUtil.styleLabel(searchLabel);
+        buttonsPanel.add(searchLabel, buttonsGbc);
+        buttonsGbc.gridx = 1;
+        buttonsPanel.add(searchField, buttonsGbc);
+
+        buttonsGbc.gridx = 0; buttonsGbc.gridy = 2;
+        buttonsPanel.add(searchButton, buttonsGbc);
+        buttonsGbc.gridx = 1;
+        buttonsPanel.add(printStudentDetailsButton, buttonsGbc);
+
+        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0; gbc.weighty = 0.0;
+        add(buttonsPanel, gbc);
 
         // Initialize course table
         initializeCourseTable();
@@ -196,11 +202,30 @@ public class CourseRegistrationPanel extends JPanel {
 
     public CourseRegistrationPanel(List<Teacher> teachers, List<Student> students) {
         this();
+        // Defensive initialization to avoid null components
+        if (teacherComboBox == null) {
+            teacherComboBox = new JComboBox<>();
+            UIStyleUtil.styleComboBox(teacherComboBox);
+        }
+        if (studentListModel == null) {
+            studentListModel = new DefaultListModel<>();
+        }
+        if (studentList == null) {
+            studentList = new JList<>(studentListModel);
+            UIStyleUtil.styleList(studentList);
+        }
+        // Clear existing items before adding new ones
+        teacherComboBox.removeAllItems();
+        studentListModel.clear();
         for (Teacher teacher : teachers) {
-            teacherComboBox.addItem(teacher);
+            if (teacher != null) {
+                teacherComboBox.addItem(teacher);
+            }
         }
         for (Student student : students) {
-            studentListModel.addElement(student);
+            if (student != null) {
+                studentListModel.addElement(student);
+            }
         }
     }
 
@@ -215,11 +240,30 @@ public class CourseRegistrationPanel extends JPanel {
         courseTable = new JTable(courseTableModel);
         courseTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         courseTable.setFillsViewportHeight(true);
+        UIStyleUtil.styleTable(courseTable);
+        courseTable.setRowHeight(28);
+        // Alternating row colors
+        courseTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            private final Color evenColor = UIStyleUtil.BACKGROUND_COLOR;
+            private final Color oddColor = UIStyleUtil.PANEL_BACKGROUND_COLOR;
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                                                           boolean isSelected, boolean hasFocus,
+                                                           int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (!isSelected) {
+                    c.setBackground(row % 2 == 0 ? evenColor : oddColor);
+                }
+                return c;
+            }
+        });
         JScrollPane courseTableScrollPane = new JScrollPane(courseTable);
+        UIStyleUtil.styleScrollPane(courseTableScrollPane);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 11;
+        gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;

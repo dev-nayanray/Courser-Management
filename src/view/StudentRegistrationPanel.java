@@ -9,17 +9,11 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-/**
- * Swing panel for student registration and course enrollment.
- * Provides form fields to input student details, buttons to submit or reset,
- * a table to display students, and controls to register students to courses.
- */
+import util.UIStyleUtil;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import java.awt.Color;
-import java.awt.Font;
 
 public class StudentRegistrationPanel extends JPanel {
     private JTextField idField;
@@ -40,106 +34,51 @@ public class StudentRegistrationPanel extends JPanel {
     public StudentRegistrationPanel() {
         setLayout(new BorderLayout(10, 10));
         setBorder(new EmptyBorder(10, 10, 10, 10));
-        Font labelFont = new Font("Segoe UI", Font.PLAIN, 14);
-        Font fieldFont = new Font("Segoe UI", Font.PLAIN, 14);
-        Font buttonFont = new Font("Segoe UI", Font.BOLD, 14);
+        UIStyleUtil.stylePanel(this);
 
         // Top panel for student registration form with titled border
         JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(new TitledBorder(new LineBorder(Color.GRAY, 1, true), "Student Information"));
+        UIStyleUtil.stylePanel(formPanel);
+        formPanel.setBorder(new TitledBorder(new LineBorder(UIStyleUtil.PRIMARY_COLOR, 1, true), "Student Information"));
         GridBagConstraints gbc = new GridBagConstraints();
 
         JLabel idLabel = new JLabel("Student ID:");
-        idLabel.setFont(labelFont);
+        UIStyleUtil.styleLabel(idLabel);
         idField = new JTextField(15);
-        idField.setFont(fieldFont);
-        idField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(180, 180, 180)),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-        idField.setBackground(Color.WHITE);
+        UIStyleUtil.styleTextField(idField);
 
         JLabel firstNameLabel = new JLabel("First Name:");
-        firstNameLabel.setFont(labelFont);
+        UIStyleUtil.styleLabel(firstNameLabel);
         firstNameField = new JTextField(15);
-        firstNameField.setFont(fieldFont);
-        firstNameField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(180, 180, 180)),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-        firstNameField.setBackground(Color.WHITE);
+        UIStyleUtil.styleTextField(firstNameField);
 
         JLabel lastNameLabel = new JLabel("Last Name:");
-        lastNameLabel.setFont(labelFont);
+        UIStyleUtil.styleLabel(lastNameLabel);
         lastNameField = new JTextField(15);
-        lastNameField.setFont(fieldFont);
-        lastNameField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(180, 180, 180)),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-        lastNameField.setBackground(Color.WHITE);
+        UIStyleUtil.styleTextField(lastNameField);
 
         JLabel emailLabel = new JLabel("Email:");
-        emailLabel.setFont(labelFont);
+        UIStyleUtil.styleLabel(emailLabel);
         emailField = new JTextField(15);
-        emailField.setFont(fieldFont);
-        emailField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(180, 180, 180)),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-        emailField.setBackground(Color.WHITE);
+        UIStyleUtil.styleTextField(emailField);
 
         JLabel majorLabel = new JLabel("Major:");
-        majorLabel.setFont(labelFont);
+        UIStyleUtil.styleLabel(majorLabel);
         majorField = new JTextField(15);
-        majorField.setFont(fieldFont);
-        majorField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(180, 180, 180)),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-        majorField.setBackground(Color.WHITE);
+        UIStyleUtil.styleTextField(majorField);
 
         JLabel yearLabel = new JLabel("Year:");
-        yearLabel.setFont(labelFont);
+        UIStyleUtil.styleLabel(yearLabel);
         yearField = new JTextField(15);
-        yearField.setFont(fieldFont);
-        yearField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(180, 180, 180)),
-            BorderFactory.createEmptyBorder(5, 5, 5, 5)
-        ));
-        yearField.setBackground(Color.WHITE);
+        UIStyleUtil.styleTextField(yearField);
 
-        submitButton = new JButton("Submit");
-        submitButton.setFont(buttonFont);
-        submitButton.setFocusPainted(false);
-        submitButton.setBackground(new Color(70, 130, 180));
-        submitButton.setForeground(Color.WHITE);
-        submitButton.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
-        submitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        submitButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                submitButton.setBackground(new Color(100, 149, 237));
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                submitButton.setBackground(new Color(70, 130, 180));
-            }
-        });
+submitButton = new JButton("Submit");
+UIStyleUtil.styleButton(submitButton);
+UIStyleUtil.addTooltip(submitButton, "Submit the student registration form");
 
-        resetButton = new JButton("Reset");
-        resetButton.setFont(buttonFont);
-        resetButton.setFocusPainted(false);
-        resetButton.setBackground(new Color(220, 20, 60));
-        resetButton.setForeground(Color.WHITE);
-        resetButton.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
-        resetButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        resetButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                resetButton.setBackground(new Color(255, 69, 0));
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                resetButton.setBackground(new Color(220, 20, 60));
-            }
-        });
+resetButton = new JButton("Reset");
+UIStyleUtil.styleButton(resetButton);
+UIStyleUtil.addTooltip(resetButton, "Reset the student registration form");
 
         gbc.insets = new Insets(10,10,10,10);
         gbc.anchor = GridBagConstraints.WEST;
@@ -189,19 +128,13 @@ public class StudentRegistrationPanel extends JPanel {
             }
         };
         studentTable = new JTable(studentTableModel);
-        studentTable.setFont(fieldFont);
+        UIStyleUtil.styleTable(studentTable);
         studentTable.setRowHeight(28);
-        studentTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 15));
-        studentTable.getTableHeader().setReorderingAllowed(false);
-        studentTable.getTableHeader().setBackground(new Color(70, 130, 180));
-        studentTable.getTableHeader().setForeground(Color.WHITE);
-        studentTable.setSelectionBackground(new Color(100, 149, 237));
-        studentTable.setSelectionForeground(Color.WHITE);
 
         // Alternating row colors
         studentTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-            private final Color evenColor = new Color(245, 245, 245);
-            private final Color oddColor = Color.WHITE;
+            private final Color evenColor = UIStyleUtil.BACKGROUND_COLOR;
+            private final Color oddColor = UIStyleUtil.PANEL_BACKGROUND_COLOR;
 
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
@@ -216,35 +149,24 @@ public class StudentRegistrationPanel extends JPanel {
         });
 
         JScrollPane tableScrollPane = new JScrollPane(studentTable);
+        UIStyleUtil.styleScrollPane(tableScrollPane);
         JPanel tablePanel = new JPanel(new BorderLayout());
-        tablePanel.setBorder(new TitledBorder(new LineBorder(new Color(70, 130, 180), 1, true), "Registered Students"));
+        UIStyleUtil.stylePanel(tablePanel);
+        tablePanel.setBorder(new TitledBorder(new LineBorder(UIStyleUtil.PRIMARY_COLOR, 1, true), "Registered Students"));
         tablePanel.add(tableScrollPane, BorderLayout.CENTER);
         add(tablePanel, BorderLayout.CENTER);
 
         // Bottom panel for course registration with titled border
         JPanel coursePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 15));
-        coursePanel.setBorder(new TitledBorder(new LineBorder(new Color(70, 130, 180), 1, true), "Course Enrollment"));
+        UIStyleUtil.stylePanel(coursePanel);
+        coursePanel.setBorder(new TitledBorder(new LineBorder(UIStyleUtil.PRIMARY_COLOR, 1, true), "Course Enrollment"));
         courseComboBox = new JComboBox<>();
-        courseComboBox.setFont(fieldFont);
-        courseComboBox.setBorder(BorderFactory.createLineBorder(new Color(180, 180, 180)));
+        UIStyleUtil.styleComboBox(courseComboBox);
         registerCourseButton = new JButton("Register Selected Student to Course");
-        registerCourseButton.setFont(buttonFont);
-        registerCourseButton.setFocusPainted(false);
-        registerCourseButton.setBackground(new Color(70, 130, 180));
-        registerCourseButton.setForeground(Color.WHITE);
-        registerCourseButton.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
-        registerCourseButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        registerCourseButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                registerCourseButton.setBackground(new Color(100, 149, 237));
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                registerCourseButton.setBackground(new Color(70, 130, 180));
-            }
-        });
+        UIStyleUtil.styleButton(registerCourseButton);
 
         coursePanel.add(new JLabel("Select Course:"));
-        coursePanel.getComponent(0).setFont(labelFont);
+        UIStyleUtil.styleLabel((JLabel) coursePanel.getComponent(0));
         coursePanel.add(courseComboBox);
         coursePanel.add(registerCourseButton);
 

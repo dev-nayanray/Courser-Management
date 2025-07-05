@@ -7,6 +7,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
+import util.UIStyleUtil;
 
 /**
  * Swing panel for department management.
@@ -23,21 +24,31 @@ public class DepartmentPanel extends JPanel {
 
     public DepartmentPanel() {
         setLayout(new BorderLayout());
+        UIStyleUtil.stylePanel(this);
 
         // Top panel for department form
         JPanel formPanel = new JPanel(new GridBagLayout());
+        UIStyleUtil.stylePanel(formPanel);
         GridBagConstraints gbc = new GridBagConstraints();
 
         JLabel idLabel = new JLabel("Department ID:");
+        UIStyleUtil.styleLabel(idLabel);
         idField = new JTextField(15);
+        UIStyleUtil.styleTextField(idField);
 
         JLabel nameLabel = new JLabel("Department Name:");
+        UIStyleUtil.styleLabel(nameLabel);
         nameField = new JTextField(15);
+        UIStyleUtil.styleTextField(nameField);
 
-        submitButton = new JButton("Submit");
-        resetButton = new JButton("Reset");
+submitButton = new JButton("Submit");
+UIStyleUtil.styleButton(submitButton);
+UIStyleUtil.addTooltip(submitButton, "Submit the department details");
+resetButton = new JButton("Reset");
+UIStyleUtil.styleButton(resetButton);
+UIStyleUtil.addTooltip(resetButton, "Reset the form fields");
 
-        gbc.insets = new Insets(5,5,5,5);
+        gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0; gbc.gridy = 0;
@@ -65,6 +76,7 @@ public class DepartmentPanel extends JPanel {
             }
         };
         departmentTable = new JTable(departmentTableModel);
+        UIStyleUtil.styleTable(departmentTable);
         JScrollPane tableScrollPane = new JScrollPane(departmentTable);
         add(tableScrollPane, BorderLayout.CENTER);
     }
