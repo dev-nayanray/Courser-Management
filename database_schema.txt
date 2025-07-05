@@ -1,0 +1,59 @@
+University Course Management System - Database Schema Overview
+
+Tables:
+
+1. students
+- id INTEGER PRIMARY KEY
+- firstName TEXT NOT NULL
+- lastName TEXT NOT NULL
+- email TEXT UNIQUE NOT NULL
+- major TEXT
+- year INTEGER
+
+2. teachers
+- id INTEGER PRIMARY KEY
+- firstName TEXT NOT NULL
+- lastName TEXT NOT NULL
+- email TEXT UNIQUE NOT NULL
+- department TEXT
+- title TEXT
+
+3. courses
+- courseId INTEGER PRIMARY KEY
+- courseName TEXT NOT NULL
+- teacherId INTEGER (Foreign key to teachers.id)
+
+4. enrollments
+- courseId INTEGER (Foreign key to courses.courseId)
+- studentId INTEGER (Foreign key to students.id)
+- PRIMARY KEY(courseId, studentId)
+
+5. marks
+- courseId INTEGER (Foreign key to courses.courseId)
+- studentId INTEGER (Foreign key to students.id)
+- marks INTEGER
+- PRIMARY KEY(courseId, studentId)
+
+6. assessment_marks
+- courseId INTEGER (Foreign key to courses.courseId)
+- studentId INTEGER (Foreign key to students.id)
+- assessmentType TEXT
+- marks INTEGER
+- PRIMARY KEY(courseId, studentId, assessmentType)
+
+7. departments
+- id INTEGER PRIMARY KEY
+- name TEXT NOT NULL
+
+8. users
+- username TEXT PRIMARY KEY
+- passwordHash TEXT NOT NULL
+- role TEXT NOT NULL
+
+9. waitlist
+- courseId INTEGER (Foreign key to courses.courseId)
+- studentId INTEGER (Foreign key to students.id)
+- position INTEGER
+- PRIMARY KEY(courseId, studentId)
+
+This schema supports the core functionalities of the University Course Management System including student, teacher, course management, enrollments, marks recording, and user authentication.
