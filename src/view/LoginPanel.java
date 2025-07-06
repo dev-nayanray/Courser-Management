@@ -8,7 +8,9 @@ import util.UIStyleUtil;
 /**
  * Basic login panel for admin authentication.
  */
-public class LoginPanel extends JPanel {
+import view.LoginView;
+
+public class LoginPanel extends JPanel implements LoginView {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;

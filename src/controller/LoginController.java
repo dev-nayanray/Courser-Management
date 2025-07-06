@@ -1,31 +1,40 @@
 
 package controller;
 
-import view.LoginPanel;
+import view.LoginView;
+import database.UserDatabaseHelper;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
- * Controller for handling basic admin-only login with hardcoded credentials and logout functionality.
+ * Controller for handling login with database authentication and logout functionality.
  */
 public class LoginController {
-    private LoginPanel view;
+    private LoginView view;
 
     private String loggedInUser;
     private String loggedInRole;
 
     private Runnable loginSuccessCallback;
 
-    private static final String ADMIN_USERNAME = "admin";
-    private static final String ADMIN_PASSWORD = "admin123";
+    private UserDatabaseHelper userDbHelper;
 
-    public LoginController(LoginPanel view) {
+    public LoginController(LoginView view) {
         this.view = view;
         this.view.addLoginListener(new LoginListener());
         this.view.addLogoutListener(new LogoutListener());
         this.view.setLogoutEnabled(false);
+
+        try {
+            userDbHelper = new UserDatabaseHelper();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Database connection error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void setLoginSuccessCallback(Runnable callback) {
@@ -44,6 +53,20 @@ public class LoginController {
         return loggedInRole;
     }
 
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashedBytes = md.digest(password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+    }
+
     private class LoginListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -51,25 +74,41 @@ public class LoginController {
             String password = view.getPassword();
 
             if (username.isEmpty() || password.isEmpty()) {
-                JOptionPane.showMessageDialog(view, "Please enter username and password.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Please enter username and password.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            if (!ADMIN_USERNAME.equals(username) || !ADMIN_PASSWORD.equals(password)) {
-                JOptionPane.showMessageDialog(view, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+            if (userDbHelper == null) {
+                JOptionPane.showMessageDialog(null, "User database not available.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            loggedInUser = username;
-            loggedInRole = "admin";
+            try {
+                String storedHash = userDbHelper.getPasswordHash(username);
+                if (storedHash == null) {
+                JOptionPane.showMessageDialog(null, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-            JOptionPane.showMessageDialog(view, "Login successful! Welcome " + loggedInUser + ".", "Success", JOptionPane.INFORMATION_MESSAGE);
+                String inputHash = hashPassword(password);
+                if (inputHash == null || !inputHash.equals(storedHash)) {
+                JOptionPane.showMessageDialog(null, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-            view.setLoginEnabled(false);
-            view.setLogoutEnabled(true);
+                loggedInUser = username;
+                loggedInRole = userDbHelper.getUserRole(username);
 
-            if (loginSuccessCallback != null) {
-                loginSuccessCallback.run();
+                JOptionPane.showMessageDialog(null, "Login successful! Welcome " + loggedInUser + ".", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                view.setLoginEnabled(false);
+                view.setLogoutEnabled(true);
+
+                if (loginSuccessCallback != null) {
+                    loginSuccessCallback.run();
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, "Database error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -82,7 +121,7 @@ public class LoginController {
             view.clearFields();
             view.setLoginEnabled(true);
             view.setLogoutEnabled(false);
-            JOptionPane.showMessageDialog(view, "Logged out successfully.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Logged out successfully.", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }

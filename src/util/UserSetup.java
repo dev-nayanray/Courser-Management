@@ -26,6 +26,18 @@ public class UserSetup {
             String userRole = "user";
             userDbHelper.addUser(userUsername, hashPassword(userPassword), userRole);
 
+            // Add teacher user
+            String teacherUsername = "teacher1";
+            String teacherPassword = "teacher123";
+            String teacherRole = "teacher";
+            userDbHelper.addUser(teacherUsername, hashPassword(teacherPassword), teacherRole);
+
+            // Add student user
+            String studentUsername = "student1";
+            String studentPassword = "student123";
+            String studentRole = "student";
+            userDbHelper.addUser(studentUsername, hashPassword(studentPassword), studentRole);
+
             System.out.println("Initial users added successfully.");
 
             userDbHelper.close();

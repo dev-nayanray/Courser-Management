@@ -17,6 +17,8 @@ public class MainApp extends JFrame {
     private AdminHeaderPanel headerPanel;
 
     public MainApp() {
+        applyLookAndFeel();
+
         setTitle("University Course Management System");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 700);
@@ -66,9 +68,9 @@ public class MainApp extends JFrame {
         MarksPanel marksPanel = new MarksPanel();
         MarksController marksController = new MarksController(marksPanel, dbHelper);
 
-        // Login Panel
-        LoginPanel loginPanel = new LoginPanel();
-        LoginController loginController = new LoginController(loginPanel);
+        // User Panel (modern login panel)
+        UserPanel userPanel = new UserPanel();
+        LoginController loginController = new LoginController(userPanel);
 
         // Add header panel
         headerPanel = new AdminHeaderPanel();
@@ -79,35 +81,55 @@ public class MainApp extends JFrame {
         add(footerPanel, BorderLayout.SOUTH);
 
         // Add only login tab initially
-        tabbedPane.addTab("Login", loginPanel);
+        tabbedPane.addTab("Login", userPanel);
         add(tabbedPane, BorderLayout.CENTER);
 
         // Set login success callback to add other tabs and remove login tab
         loginController.setLoginSuccessCallback(() -> {
             SwingUtilities.invokeLater(() -> {
-                tabbedPane.remove(loginPanel);
-                tabbedPane.addTab("Students", studentPanel);
-                tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(studentPanel), createTabTitle("Students", UIManager.getIcon("FileView.fileIcon")));
+                tabbedPane.remove(userPanel);
+                String role = loginController.getLoggedInRole();
 
-                tabbedPane.addTab("Teachers", teacherPanel);
-                tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(teacherPanel), createTabTitle("Teachers", UIManager.getIcon("FileView.directoryIcon")));
+                JOptionPane.showMessageDialog(this, "Welcome " + loginController.getLoggedInUser() + "!", "Welcome", JOptionPane.INFORMATION_MESSAGE);
 
-                tabbedPane.addTab("Courses", coursePanel);
-                tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(coursePanel), createTabTitle("Courses", UIManager.getIcon("FileView.computerIcon")));
+                if ("admin".equalsIgnoreCase(role)) {
+                    tabbedPane.addTab("Students", studentPanel);
+                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(studentPanel), createTabTitle("Students", UIManager.getIcon("FileView.fileIcon")));
 
-                tabbedPane.addTab("Departments", departmentPanel);
-                tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(departmentPanel), createTabTitle("Departments", UIManager.getIcon("FileView.hardDriveIcon")));
+                    tabbedPane.addTab("Teachers", teacherPanel);
+                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(teacherPanel), createTabTitle("Teachers", UIManager.getIcon("FileView.directoryIcon")));
 
-                tabbedPane.addTab("Enrollment", enrollmentPanel);
-                tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(enrollmentPanel), createTabTitle("Enrollment", UIManager.getIcon("FileChooser.detailsViewIcon")));
+                    tabbedPane.addTab("Courses", coursePanel);
+                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(coursePanel), createTabTitle("Courses", UIManager.getIcon("FileView.computerIcon")));
 
-                tabbedPane.addTab("Marks", marksPanel);
-                tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(marksPanel), createTabTitle("Marks", UIManager.getIcon("FileChooser.listViewIcon")));
+                    tabbedPane.addTab("Departments", departmentPanel);
+                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(departmentPanel), createTabTitle("Departments", UIManager.getIcon("FileView.hardDriveIcon")));
 
-                tabbedPane.setSelectedIndex(0);
+                    tabbedPane.addTab("Enrollment", enrollmentPanel);
+                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(enrollmentPanel), createTabTitle("Enrollment", UIManager.getIcon("FileChooser.detailsViewIcon")));
+
+                    tabbedPane.addTab("Marks", marksPanel);
+                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(marksPanel), createTabTitle("Marks", UIManager.getIcon("FileChooser.listViewIcon")));
+
+                    tabbedPane.setSelectedIndex(tabbedPane.indexOfComponent(studentPanel));
+                } else if ("student".equalsIgnoreCase(role)) {
+                    tabbedPane.addTab("Students", studentPanel);
+                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(studentPanel), createTabTitle("Students", UIManager.getIcon("FileView.fileIcon")));
+                    tabbedPane.setSelectedIndex(tabbedPane.indexOfComponent(studentPanel));
+                } else if ("teacher".equalsIgnoreCase(role)) {
+                    tabbedPane.addTab("Teachers", teacherPanel);
+                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(teacherPanel), createTabTitle("Teachers", UIManager.getIcon("FileView.directoryIcon")));
+                    tabbedPane.setSelectedIndex(tabbedPane.indexOfComponent(teacherPanel));
+                } else {
+                    // Default fallback: show login tab again
+                    // Remove fallback to login tab to prevent going back to login after success
+                    // tabbedPane.addTab("Login", userPanel);
+                    // tabbedPane.setSelectedIndex(tabbedPane.indexOfComponent(userPanel));
+                }
             });
         });
 
+        addHeaderLogoutListener(userPanel);
     }
 
     private JPanel createTabTitle(String title, Icon icon) {
@@ -126,14 +148,18 @@ public class MainApp extends JFrame {
     }
 
     // Add logout listener to header panel
-    private void addHeaderLogoutListener(LoginPanel loginPanel) {
+    private void addHeaderLogoutListener(UserPanel userPanel) {
         headerPanel.addLogoutListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 SwingUtilities.invokeLater(() -> {
                     tabbedPane.removeAll();
-                    tabbedPane.addTab("Login", loginPanel);
+                    tabbedPane.addTab("Login", userPanel);
                     tabbedPane.setSelectedIndex(0);
+                    // Clear login state and reset login panel
+                    userPanel.clearFields();
+                    userPanel.setLoginEnabled(true);
+                    userPanel.setLogoutEnabled(false);
                 });
             }
         });
