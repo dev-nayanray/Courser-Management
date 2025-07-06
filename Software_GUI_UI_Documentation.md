@@ -1,64 +1,246 @@
-# Software GUI UI Documentation
+This documentation covers the primary GUI components and their roles within the Course Management software. For detailed implementation, refer to the source code in the `src/view` directory.
+=======
+---
 
-## 1. Introduction
+## 8. Visual Diagrams and Technical Details
 
-This document provides an overview of the graphical user interface (GUI) of the Course Management software. The GUI follows the Model-View-Controller (MVC) architecture, separating the data model, user interface, and control logic for maintainability and scalability. The UI components are primarily implemented using Java Swing, organized into panels representing different functional areas.
+### 8.1 UML Class Diagram
 
-## 2. AdminWelcomePanel
+```plantuml
+@startuml
+abstract class Person {
+  - id: int
+  - name: String
+  - dept: String
+  + getId(): int
+  + getName(): String
+  + getDept(): String
+}
 
-The `AdminWelcomePanel` serves as the main dashboard for administrators. It provides a summary of key statistics and quick access to common actions.
+class Student {
+  - courses: List<Course>
+  + registerCourse(course: Course)
+  + getCourses(): List<Course>
+}
 
-### Layout and Components
-- **Header:** Displays the title "Admin Dashboard" and a last updated timestamp.
-- **Search Field:** Allows searching for students, teachers, or courses with live search functionality.
-- **Statistics Cards:** Three cards showing total counts of students, teachers, and courses, each styled with icons and colors.
-- **Chart Panel:** A bar chart visualizing student enrollment over recent months, implemented using JFreeChart.
-- **Quick Actions Panel:** Buttons for common tasks such as adding students, teachers, courses, managing departments, enrollments, marks, user management, and system settings.
+class Teacher {
+  - designation: String
+  - coursesTaught: List<Course>
+  + assignCourse(course: Course)
+  + getCoursesTaught(): List<Course>
+}
 
-### Interaction
-- Buttons trigger navigation events to respective panels.
-- The search field triggers search events as the user types.
-- Data is refreshed dynamically from the database.
+class Course {
+  - code: int
+  - title: String
+  - teacher: Teacher
+  - enrolledStudents: List<Student>
+  - schedule: String
+  - credits: int
+  - maxStudents: int
+  + addStudent(student: Student)
+  + removeStudent(student: Student)
+  + getEnrolledStudents(): List<Student>
+}
 
-## 3. LoginPanel
+class Department {
+  - name: String
+  - courses: List<Course>
+  + addCourse(course: Course)
+  + getCourses(): List<Course>
+}
 
-The `LoginPanel` provides a simple login interface for administrator authentication.
+class Enrollment {
+  - student: Student
+  - course: Course
+  + getStudent(): Student
+  + getCourse(): Course
+}
 
-### Layout and Components
-- **Username Field:** Text input for the username.
-- **Password Field:** Password input for the password.
-- **Login Button:** Initiates login action.
-- **Logout Button:** Allows logging out; initially disabled until login.
+Person <|-- Student
+Person <|-- Teacher
+Course "1" *-- "many" Student : enrolledStudents
+Course "1" o-- "1" Teacher : teacher
+Department "1" *-- "many" Course : courses
+Enrollment "1" o-- "1" Student
+Enrollment "1" o-- "1" Course
+@enduml
+```
 
-### Interaction
-- Provides methods to get input values and clear fields.
-- Supports adding listeners for login and logout button actions.
-- Uses consistent styling via `UIStyleUtil`.
-
-## 4. CourseRegistrationPanel
-
-The `CourseRegistrationPanel` allows managing course details and student enrollment.
-
-### Layout and Components
-- **Course Details Form:** Fields for course ID, name, schedule, credits, max students, and teacher selection.
-- **Enrolled Students List:** Displays students enrolled in the course with add/remove buttons.
-- **Course Table:** Shows a list of courses with details in a non-editable table.
-- **Search and Print:** Search field and buttons to search courses and print student details.
-- **Submit and Reset Buttons:** For form submission and clearing inputs.
-
-### Interaction
-- Provides methods to get and set form data.
-- Supports adding action listeners for all buttons.
-- Uses `UIStyleUtil` for consistent styling and tooltips for usability.
-
-## 5. UI Styling
-
-The project uses a utility class `UIStyleUtil` to apply consistent styling across all UI components, including colors, fonts, borders, and icons. This ensures a uniform look and feel throughout the application.
-
-## 6. Navigation and Interaction
-
-Navigation between panels is handled via listener interfaces, allowing decoupled communication between UI components and controllers. Buttons in panels trigger navigation events to switch views, and search fields provide live filtering capabilities.
+*This UML class diagram illustrates the main classes and their relationships, showing inheritance, composition, and associations.*
 
 ---
 
-This documentation covers the primary GUI components and their roles within the Course Management software. For detailed implementation, refer to the source code in the `src/view` directory.
+### 8.2 Sequence Diagrams
+
+#### 8.2.1 Login Flow
+
+```plantuml
+@startuml
+actor Admin
+participant LoginPanel
+participant LoginController
+participant DatabaseHelper
+
+Admin -> LoginPanel: Enter username and password
+LoginPanel -> LoginController: Submit credentials
+LoginController -> DatabaseHelper: Validate credentials
+DatabaseHelper --> LoginController: Validation result
+LoginController --> LoginPanel: Success or failure
+LoginPanel --> Admin: Display login result
+@enduml
+```
+
+#### 8.2.2 Course Registration Flow
+
+```plantuml
+@startuml
+actor Admin
+participant CourseRegistrationPanel
+participant CourseController
+participant DatabaseHelper
+
+Admin -> CourseRegistrationPanel: Fill course form and submit
+CourseRegistrationPanel -> CourseController: Submit course data
+CourseController -> DatabaseHelper: Add course to database
+DatabaseHelper --> CourseController: Confirmation
+CourseController --> CourseRegistrationPanel: Success message
+CourseRegistrationPanel --> Admin: Display confirmation
+@enduml
+```
+
+*These sequence diagrams depict the interaction between user interface, controller, and database during login and course registration.*
+
+---
+
+### 8.3 Component Diagram
+
+```plantuml
+@startuml
+package "User Interface" {
+  [LoginPanel]
+  [AdminWelcomePanel]
+  [CourseRegistrationPanel]
+  [StudentRegistrationPanel]
+  [TeacherRegistrationPanel]
+  [EnrollmentPanel]
+  [MarksPanel]
+  [UserManagementPanel]
+}
+
+package "Controllers" {
+  [LoginController]
+  [AdminWelcomeController]
+  [CourseController]
+  [StudentController]
+  [TeacherController]
+  [EnrollmentController]
+  [MarksController]
+  [UserController]
+}
+
+package "Database" {
+  [DatabaseHelper]
+  [DatabaseHelperAssessmentMarks]
+}
+
+[User Interface] --> [Controllers]
+[Controllers] --> [Database]
+@enduml
+```
+
+*The component diagram shows the modular structure of the system and the interactions between UI, controllers, and database helpers.*
+
+---
+
+### 8.4 Flowcharts
+
+#### 8.4.1 Student Registration Algorithm
+
+```plaintext
++---------------------+
+| Start               |
++---------------------+
+          |
+          v
++---------------------+
+| Input student data   |
++---------------------+
+          |
+          v
++---------------------+
+| Validate input       |
++---------------------+
+          |
+          v
++---------------------+
+| Add student to DB    |
++---------------------+
+          |
+          v
++---------------------+
+| Display success msg  |
++---------------------+
+          |
+          v
++---------------------+
+| End                 |
++---------------------+
+```
+
+#### 8.4.2 Course Enrollment Algorithm
+
+```plaintext
++-----------------------------+
+| Start                       |
++-----------------------------+
+            |
+            v
++-----------------------------+
+| Select student and course   |
++-----------------------------+
+            |
+            v
++-----------------------------+
+| Check course capacity       |
++-----------------------------+
+            |
+     +------+------+
+     |             |
+     v             v
++---------+   +-----------------+
+| Not full|   | Full            |
++---------+   +-----------------+
+     |             |
+     v             v
++-----------------------------+
+| Enroll student in course    |
++-----------------------------+
+            |
+            v
++-----------------------------+
+| Display success message     |
++-----------------------------+
+            |
+            v
++-----------------------------+
+| End                         |
++-----------------------------+
+```
+
+*These flowcharts illustrate the step-by-step process for student registration and course enrollment.*
+
+---
+
+### 8.5 Technical Details
+
+- The UML class diagram reflects the core data model and relationships, supporting OOP principles such as inheritance and composition.
+- Sequence diagrams demonstrate the flow of control and data between UI, controllers, and database during key operations.
+- The component diagram highlights the modular architecture, showing clear separation of concerns.
+- Flowcharts provide a visual representation of the main algorithms, aiding understanding and maintenance.
+- All diagrams are represented in PlantUML syntax for easy visualization and modification.
+- The system uses Java Swing for UI, controllers for business logic, and database helpers for data persistence, following MVC architecture.
+
+---
+
+This section enhances the documentation with visual and technical insights, improving clarity and professionalism.
