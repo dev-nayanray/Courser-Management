@@ -1,5 +1,5 @@
 # MVC Architecture Documentation for University Course Management System
-
+![MVC Diagram](https://github.com/dev-nayanray/Courser-Management/blob/main/mvc.png?raw=true)
 ## Overview
 
 This project follows the Model-View-Controller (MVC) architectural pattern to separate concerns and organize the codebase effectively. The MVC pattern divides the application into three interconnected components:
