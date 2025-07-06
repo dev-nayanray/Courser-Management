@@ -8,7 +8,7 @@
 **Student ID:** 12230320521  
 **ECSE:** 4K  
 
-![MVC Diagram](https://github.com/dev-nayanray/Courser-Management/blob/main/MVCS.png?raw=true)
+
 
 ## Overview  
 This Java-based system implements core Object-Oriented Programming (OOP) principles to automate university course management. Designed for CSE 2216, it satisfies all specified requirements for modeling course/student/teacher relationships through robust OOP design.

@@ -1,5 +1,7 @@
 # OOP Concepts Documentation for University Course Management System
 
+
+![MVC Diagram](https://github.com/dev-nayanray/Courser-Management/blob/main/oopconcept.png?raw=true)
 ## Introduction
 
 This document provides a comprehensive and professional explanation of the core Object-Oriented Programming (OOP) concepts applied in the University Course Management System project. It details how each principle is systematically implemented within the codebase and emphasizes the strategic benefits of documenting these concepts to enhance project planning, development, and maintenance.
