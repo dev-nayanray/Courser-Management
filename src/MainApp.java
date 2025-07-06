@@ -96,6 +96,14 @@ public class MainApp extends JFrame {
                 JOptionPane.showMessageDialog(this, "Welcome " + loginController.getLoggedInUser() + "!", "Welcome", JOptionPane.INFORMATION_MESSAGE);
 
                 AdminWelcomePanel adminWelcomePanel = new AdminWelcomePanel();
+                adminWelcomePanel.setNavigationListener(panelName -> {
+                    for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+                        if (tabbedPane.getTitleAt(i).equals(panelName)) {
+                            tabbedPane.setSelectedIndex(i);
+                            break;
+                        }
+                    }
+                });
                 tabbedPane.addTab("Welcome", adminWelcomePanel);
                 tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(adminWelcomePanel), createTabTitle("Welcome", UIManager.getIcon("FileView.computerIcon")));
 

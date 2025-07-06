@@ -16,6 +16,16 @@ public class AdminWelcomePanel extends JPanel {
     private JLabel lastUpdatedLabel;
     private JPanel statsPanel;
 
+    private NavigationListener navigationListener;
+
+    public interface NavigationListener {
+        void navigateTo(String panelName);
+    }
+
+    public void setNavigationListener(NavigationListener listener) {
+        this.navigationListener = listener;
+    }
+
     public AdminWelcomePanel() {
         setLayout(new BorderLayout(20, 20));
         setBackground(Color.WHITE);
@@ -129,7 +139,9 @@ public class AdminWelcomePanel extends JPanel {
         
         if (!targetPanel.isEmpty()) {
             button.addActionListener(e -> {
-                // No parentFrame to call showPanel, so no action or alternative handling here
+                if (navigationListener != null) {
+                    navigationListener.navigateTo(targetPanel);
+                }
             });
         }
         
