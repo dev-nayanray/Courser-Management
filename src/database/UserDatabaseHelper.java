@@ -40,6 +40,24 @@ public class UserDatabaseHelper {
         }
     }
 
+    public void updateUser(String username, String passwordHash, String role) throws SQLException {
+        String sql = "UPDATE users SET passwordHash = ?, role = ? WHERE username = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, passwordHash);
+            pstmt.setString(2, role);
+            pstmt.setString(3, username);
+            pstmt.executeUpdate();
+        }
+    }
+
+    public void deleteUser(String username) throws SQLException {
+        String sql = "DELETE FROM users WHERE username = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.executeUpdate();
+        }
+    }
+
     public String getUserRole(String username) throws SQLException {
         String sql = "SELECT role FROM users WHERE username = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {

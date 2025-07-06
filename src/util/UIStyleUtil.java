@@ -24,6 +24,11 @@ public class UIStyleUtil {
     public static final Color SCROLLPANE_BORDER_COLOR = new Color(220, 220, 220);
     public static final Color TABLE_ROW_HOVER_COLOR = new Color(220, 235, 255);
 
+    // Add missing colors
+    public static final Color SIDEBAR_BG = new Color(33, 37, 41); // Dark gray for sidebar background
+    public static final Color SECONDARY_COLOR = new Color(108, 117, 125); // Gray for secondary buttons
+    public static final Color LIGHT_GRAY = new Color(211, 211, 211);
+
     // Define fonts
     public static final Font LABEL_FONT = new Font("Segoe UI", Font.PLAIN, 14);
     public static final Font FIELD_FONT = new Font("Segoe UI", Font.PLAIN, 14);
@@ -188,5 +193,23 @@ public class UIStyleUtil {
      */
     public static void addTooltip(JButton button, String tooltip) {
         button.setToolTipText(tooltip);
+    }
+
+    /**
+     * Load and scale an image icon from resources/icons folder.
+     * @param filename image file name
+     * @param width desired width
+     * @param height desired height
+     * @return scaled ImageIcon or null if error
+     */
+    public static ImageIcon loadImage(String filename, int width, int height) {
+        try {
+            ImageIcon icon = new ImageIcon(UIStyleUtil.class.getResource("/icons/" + filename));
+            Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            return new ImageIcon(img);
+        } catch (Exception e) {
+            System.err.println("Error loading icon: " + filename);
+            return null;
+        }
     }
 }

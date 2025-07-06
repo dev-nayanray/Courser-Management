@@ -72,6 +72,10 @@ public class MainApp extends JFrame {
         UserPanel userPanel = new UserPanel();
         LoginController loginController = new LoginController(userPanel);
 
+        // User Management Panel and Controller
+        view.UserManagementPanel userManagementPanel = new view.UserManagementPanel();
+        controller.UserController userController = new controller.UserController(userManagementPanel);
+
         // Add header panel
         headerPanel = new AdminHeaderPanel();
         add(headerPanel, BorderLayout.NORTH);
@@ -88,45 +92,37 @@ public class MainApp extends JFrame {
         loginController.setLoginSuccessCallback(() -> {
             SwingUtilities.invokeLater(() -> {
                 tabbedPane.remove(userPanel);
-                String role = loginController.getLoggedInRole();
 
                 JOptionPane.showMessageDialog(this, "Welcome " + loginController.getLoggedInUser() + "!", "Welcome", JOptionPane.INFORMATION_MESSAGE);
 
-                if ("admin".equalsIgnoreCase(role)) {
-                    tabbedPane.addTab("Students", studentPanel);
-                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(studentPanel), createTabTitle("Students", UIManager.getIcon("FileView.fileIcon")));
+                AdminWelcomePanel adminWelcomePanel = new AdminWelcomePanel();
+                tabbedPane.addTab("Welcome", adminWelcomePanel);
+                tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(adminWelcomePanel), createTabTitle("Welcome", UIManager.getIcon("FileView.computerIcon")));
 
-                    tabbedPane.addTab("Teachers", teacherPanel);
-                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(teacherPanel), createTabTitle("Teachers", UIManager.getIcon("FileView.directoryIcon")));
+                tabbedPane.addTab("Students", studentPanel);
+                tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(studentPanel), createTabTitle("Students", UIManager.getIcon("FileView.fileIcon")));
 
-                    tabbedPane.addTab("Courses", coursePanel);
-                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(coursePanel), createTabTitle("Courses", UIManager.getIcon("FileView.computerIcon")));
+                tabbedPane.addTab("Teachers", teacherPanel);
+                tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(teacherPanel), createTabTitle("Teachers", UIManager.getIcon("FileView.directoryIcon")));
 
-                    tabbedPane.addTab("Departments", departmentPanel);
-                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(departmentPanel), createTabTitle("Departments", UIManager.getIcon("FileView.hardDriveIcon")));
+                tabbedPane.addTab("Courses", coursePanel);
+                tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(coursePanel), createTabTitle("Courses", UIManager.getIcon("FileView.computerIcon")));
 
-                    tabbedPane.addTab("Enrollment", enrollmentPanel);
-                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(enrollmentPanel), createTabTitle("Enrollment", UIManager.getIcon("FileChooser.detailsViewIcon")));
+                tabbedPane.addTab("Departments", departmentPanel);
+                tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(departmentPanel), createTabTitle("Departments", UIManager.getIcon("FileView.hardDriveIcon")));
 
-                    tabbedPane.addTab("Marks", marksPanel);
-                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(marksPanel), createTabTitle("Marks", UIManager.getIcon("FileChooser.listViewIcon")));
+                tabbedPane.addTab("Enrollment", enrollmentPanel);
+                tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(enrollmentPanel), createTabTitle("Enrollment", UIManager.getIcon("FileChooser.detailsViewIcon")));
 
-                    tabbedPane.setSelectedIndex(tabbedPane.indexOfComponent(studentPanel));
-                } else if ("student".equalsIgnoreCase(role)) {
-                    tabbedPane.addTab("Students", studentPanel);
-                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(studentPanel), createTabTitle("Students", UIManager.getIcon("FileView.fileIcon")));
-                    tabbedPane.setSelectedIndex(tabbedPane.indexOfComponent(studentPanel));
-                } else if ("teacher".equalsIgnoreCase(role)) {
-                    tabbedPane.addTab("Teachers", teacherPanel);
-                    tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(teacherPanel), createTabTitle("Teachers", UIManager.getIcon("FileView.directoryIcon")));
-                    tabbedPane.setSelectedIndex(tabbedPane.indexOfComponent(teacherPanel));
-                } else {
-                    // Default fallback: show login tab again
-                    // Remove fallback to login tab to prevent going back to login after success
-                    // tabbedPane.addTab("Login", userPanel);
-                    // tabbedPane.setSelectedIndex(tabbedPane.indexOfComponent(userPanel));
-                }
+                tabbedPane.addTab("Marks", marksPanel);
+                tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(marksPanel), createTabTitle("Marks", UIManager.getIcon("FileChooser.listViewIcon")));
+
+                tabbedPane.addTab("User Management", userManagementPanel);
+                tabbedPane.setTabComponentAt(tabbedPane.indexOfComponent(userManagementPanel), createTabTitle("User Management", UIManager.getIcon("FileView.computerIcon")));
+
+                tabbedPane.setSelectedIndex(tabbedPane.indexOfComponent(adminWelcomePanel));
             });
+
         });
 
         addHeaderLogoutListener(userPanel);
